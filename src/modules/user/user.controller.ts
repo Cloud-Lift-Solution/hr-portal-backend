@@ -5,30 +5,33 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards,
+  // UseGuards,
   Put,
   Body,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags /* ApiBearerAuth */ } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserProfileResponseDto } from './dto';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+// import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
 import { S3SignedUrlInterceptor } from '../../common/interceptors/s3-signed-url.interceptor';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('Users')
-@ApiBearerAuth('JWT-auth')
+// @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard) // Commented out for testing - Remove comment to enable JWT auth
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   /**
    * Get current user profile with localized content
    * S3 file keys (cvFileKey, portfolioFileKey) are automatically transformed to signed URLs
+   * 
+   * ⚠️ NOTE: This endpoint uses @CurrentUser() which requires JWT authentication.
+   * It may not work properly with auth disabled.
    */
   @Get('profile')
   @HttpCode(HttpStatus.OK)
@@ -42,6 +45,9 @@ export class UserController {
 
   /**
    * Update current user profile
+   * 
+   * ⚠️ NOTE: This endpoint uses @CurrentUser() which requires JWT authentication.
+   * It may not work properly with auth disabled.
    */
   @Put('profile')
   @HttpCode(HttpStatus.OK)
