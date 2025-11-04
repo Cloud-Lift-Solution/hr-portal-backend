@@ -9,6 +9,7 @@ import {
   Put,
   Body,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserProfileResponseDto } from './dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -17,6 +18,8 @@ import { AcceptLanguage } from '../../common/decorators/accept-language.decorato
 import { S3SignedUrlInterceptor } from '../../common/interceptors/s3-signed-url.interceptor';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
+@ApiTags('Users')
+@ApiBearerAuth('JWT-auth')
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)

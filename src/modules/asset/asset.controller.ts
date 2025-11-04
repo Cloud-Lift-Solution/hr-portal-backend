@@ -15,11 +15,14 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AssetService } from './asset.service';
 import { CreateAssetDto, UpdateAssetDto, AssetResponseDto } from './dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
 
+@ApiTags('Assets')
+@ApiBearerAuth('JWT-auth')
 @Controller('assets')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)

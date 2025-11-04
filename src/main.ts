@@ -10,6 +10,8 @@ import {
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { Logger } from '@nestjs/common';
+import { SwaggerModule } from '@nestjs/swagger';
+import { swaggerConfig } from './config/swagger.config';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -36,12 +38,25 @@ async function bootstrap() {
   // Set up global filters LAST (so it can catch everything)
   app.useGlobalFilters(new GlobalExceptionFilter());
 
+  // Setup Swagger Documentation
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api-docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+    },
+  });
+
   await app.listen(envConfig.port);
 
   logger.log(`🚀 Application running on port ${envConfig.port}`);
   logger.log(`📊 Environment: ${envConfig.environment}`);
   logger.log(
     `🌍 API available at: http://localhost:${envConfig.port}/${appConfig.globalPrefix}`,
+  );
+  logger.log(
+    `📚 Swagger Docs: http://localhost:${envConfig.port}/api-docs`,
   );
 }
 
