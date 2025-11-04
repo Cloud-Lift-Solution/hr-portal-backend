@@ -1,0 +1,56 @@
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  UseGuards,
+  Put,
+  Body,
+} from '@nestjs/common';
+import { UserService } from './user.service';
+import { UserProfileResponseDto } from './dto';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
+import { S3SignedUrlInterceptor } from '../../common/interceptors/s3-signed-url.interceptor';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+
+@Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(JwtAuthGuard)
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  /**
+   * Get current user profile with localized content
+   * S3 file keys (cvFileKey, portfolioFileKey) are automatically transformed to signed URLs
+   */
+  @Get('profile')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(S3SignedUrlInterceptor)
+  async getUserProfile(
+    @CurrentUser() user: { id: string; email: string },
+    @AcceptLanguage() language: string,
+  ): Promise<UserProfileResponseDto> {
+    return await this.userService.getUserProfile(user.id, language);
+  }
+
+  /**
+   * Update current user profile
+   */
+  @Put('profile')
+  @HttpCode(HttpStatus.OK)
+  async updateProfile(
+    @CurrentUser() user: { id: string; email: string },
+    @Body() updateProfileDto: UpdateProfileDto,
+    @AcceptLanguage() language: string,
+  ): Promise<{ message: string }> {
+    return await this.userService.updateProfile(
+      user.id,
+      updateProfileDto,
+      language,
+    );
+  }
+}

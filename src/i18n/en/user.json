@@ -1,0 +1,8 @@
+{
+  "profile": {
+    "notFound": "User not found",
+    "fetchFailed": "Failed to fetch user profile",
+    "updateSuccess": "Profile updated successfully",
+    "updateFailed": "Failed to update profile"
+  }
+}
