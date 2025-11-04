@@ -48,42 +48,6 @@ export class UserService {
         id: true,
         email: true,
         name: true,
-        yearsOfExperience: true,
-        cvFileKey: true,
-        portfolioFileKey: true,
-        age: true,
-        gender: true,
-        preferredLanguage: true,
-        sessionDuration: true,
-        challengeLevel: true,
-        createdAt: true,
-        updatedAt: true,
-        workField: {
-          select: {
-            id: true,
-            translations: {
-              where: {
-                language: {
-                  code: languageCode,
-                },
-              },
-              select: { name: true },
-            },
-          },
-        },
-        jobTitle: {
-          select: {
-            id: true,
-            translations: {
-              where: {
-                language: {
-                  code: languageCode,
-                },
-              },
-              select: { name: true },
-            },
-          },
-        },
       },
     });
   }
@@ -106,7 +70,6 @@ export class UserService {
       // Prepare update data
       const dataToUpdate: any = {
         name: updateData.name,
-        age: updateData.age,
       };
 
       // Hash password if provided

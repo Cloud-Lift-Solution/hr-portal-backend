@@ -1,13 +1,11 @@
 import {
   IsString,
   IsNotEmpty,
-  IsEnum,
   IsOptional,
   MaxLength,
   MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { AgeRange } from '@prisma/client';
 
 export class UpdateProfileDto {
   @IsString()
@@ -21,7 +19,4 @@ export class UpdateProfileDto {
   @MinLength(8)
   @MaxLength(100)
   password?: string;
-
-  @IsEnum(AgeRange)
-  age: AgeRange;
 }
