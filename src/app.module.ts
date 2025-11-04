@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from './modules/jwt/jwt.module';
+import { AssetModule } from './modules/asset/asset.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { JwtModule } from './modules/jwt/jwt.module';
     PrismaModule,
     UserModule,
     JwtModule,
+    AssetModule,
   ],
   controllers: [],
   providers: [],

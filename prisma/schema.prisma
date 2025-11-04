@@ -20,3 +20,40 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+// ============= ASSET MODELS =============
+
+enum AssetType {
+  WITH_SERIAL_NUMBER                    // مع الرقم التسلسلي
+  WITH_CATEGORIES                       // مع أصناف
+  WITH_SERIAL_NUMBER_AND_CATEGORIES     // مع الرقم التسلسلي و أصناف
+}
+
+model Asset {
+  id           String     @id @default(uuid())
+  name         String     // الإسم
+  serialNumber String?    // الرقم التسلسلي (optional based on type)
+  type         AssetType  // Type of asset entry
+
+  // Relations
+  categories   AssetCategory[]   @relation("AssetCategories")
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([serialNumber])
+}
+
+model AssetCategory {
+  id          String   @id @default(uuid())
+  name        String   // صنف (category name)
+
+  // Relations
+  assetId     String
+  asset       Asset    @relation("AssetCategories", fields: [assetId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([assetId])
+}
+

@@ -1,0 +1,11 @@
+{
+  "notFound": "الأصل غير موجود",
+  "serialNumberExists": "يوجد أصل بهذا الرقم التسلسلي بالفعل",
+  "createSuccess": "تم إنشاء الأصل بنجاح",
+  "updateSuccess": "تم تحديث الأصل بنجاح",
+  "deleteSuccess": "تم حذف الأصل بنجاح",
+  "fetchFailed": "فشل في جلب الأصل",
+  "createFailed": "فشل في إنشاء الأصل",
+  "updateFailed": "فشل في تحديث الأصل",
+  "deleteFailed": "فشل في حذف الأصل"
+}

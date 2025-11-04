@@ -1,0 +1,11 @@
+{
+  "notFound": "Asset not found",
+  "serialNumberExists": "An asset with this serial number already exists",
+  "createSuccess": "Asset created successfully",
+  "updateSuccess": "Asset updated successfully",
+  "deleteSuccess": "Asset deleted successfully",
+  "fetchFailed": "Failed to fetch asset",
+  "createFailed": "Failed to create asset",
+  "updateFailed": "Failed to update asset",
+  "deleteFailed": "Failed to delete asset"
+}

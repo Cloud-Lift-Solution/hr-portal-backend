@@ -1,0 +1,10 @@
+import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+
+export class AssetCategoryDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  @Transform(({ value }) => value?.trim())
+  name: string;
+}
