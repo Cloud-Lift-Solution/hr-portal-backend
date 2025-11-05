@@ -36,6 +36,7 @@ model Asset {
 
   // Relations
   categories   AssetCategory[]   @relation("AssetCategories")
+  employees    EmployeeAsset[]
 
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -63,8 +64,87 @@ model Department {
   id        String   @id @default(uuid())
   name      String   @unique  // Department name (must be unique)
 
+  // Relations
+  employees Employee[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([name])
+}
+
+// ============= EMPLOYEE MODELS =============
+
+enum EmploymentType {
+  FULL_TIME                
+  PART_TIME               
+  INDEPENDENT_CONTRACTOR   
+  TEMPORARY_EMPLOYEE    
+  INTERN                  
+  PER_HOUR             
+}
+
+model Employee {
+  id                    String          @id @default(uuid())
+  name                  String
+  civilId               String?
+  civilIdExpiryDate     DateTime?
+  passportNo            String?
+  passportExpiryDate    DateTime?
+  nationality           String?
+  jobTitle              String?
+  startDate             DateTime?
+  type                  EmploymentType
+  salary                Decimal?        @db.Decimal(12, 2)
+  iban                  String?
+  personalEmail         String?
+  companyEmail          String?         @unique
+
+  // Relations
+  departmentId          String?
+  department            Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  assets                EmployeeAsset[]
+  attachments           EmployeeAttachment[]
+
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  @@index([departmentId])
+  @@index([type])
+  @@index([civilId])
+  @@index([companyEmail])
+}
+
+// Junction table for Employee-Asset many-to-many relationship
+model EmployeeAsset {
+  id          String    @id @default(uuid())
+
+  employeeId  String
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  assetId     String
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  assignedAt  DateTime  @default(now())
+
+  @@unique([employeeId, assetId])
+  @@index([employeeId])
+  @@index([assetId])
+}
+
+// Employee attachments 
+model EmployeeAttachment {
+  id          String    @id @default(uuid())
+  url         String    @db.Text  // S3 URL
+  fileName    String?   // Original file name for reference
+  fileSize    Int?      // File size in bytes
+  mimeType    String?   // MIME type (e.g., image/png, application/pdf)
+
+  employeeId  String
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  uploadedAt  DateTime  @default(now())
+
+  @@index([employeeId])
 }
