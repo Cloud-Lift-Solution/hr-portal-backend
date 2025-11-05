@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { JwtModule } from './modules/jwt/jwt.module';
 import { AssetModule } from './modules/asset/asset.module';
 import { DepartmentModule } from './modules/department/department.module';
+import { EmployeeModule } from './modules/employee/employee.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DepartmentModule } from './modules/department/department.module';
     JwtModule,
     AssetModule,
     DepartmentModule,
+    EmployeeModule,
   ],
   controllers: [],
   providers: [],
