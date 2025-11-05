@@ -1,0 +1,19 @@
+{
+  "notFound": "الموظف غير موجود",
+  "companyEmailExists": "يوجد موظف بهذا البريد الإلكتروني للشركة بالفعل",
+  "createSuccess": "تم إنشاء الموظف بنجاح",
+  "updateSuccess": "تم تحديث الموظف بنجاح",
+  "deleteSuccess": "تم حذف الموظف بنجاح",
+  "fetchFailed": "فشل في جلب الموظف",
+  "createFailed": "فشل في إنشاء الموظف",
+  "updateFailed": "فشل في تحديث الموظف",
+  "deleteFailed": "فشل في حذف الموظف",
+  "assetAssignSuccess": "تم تعيين الأصل للموظف بنجاح",
+  "assetUnassignSuccess": "تم إلغاء تعيين الأصل من الموظف بنجاح",
+  "assetAlreadyAssigned": "هذا الأصل معين بالفعل لهذا الموظف",
+  "assetNotAssigned": "هذا الأصل غير معين لهذا الموظف",
+  "attachmentAddSuccess": "تمت إضافة المرفق بنجاح",
+  "attachmentDeleteSuccess": "تم حذف المرفق بنجاح",
+  "attachmentNotFound": "المرفق غير موجود أو لا ينتمي لهذا الموظف"
+}
+

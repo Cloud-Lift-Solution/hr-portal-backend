@@ -1,0 +1,19 @@
+{
+  "notFound": "Employee not found",
+  "companyEmailExists": "An employee with this company email already exists",
+  "createSuccess": "Employee created successfully",
+  "updateSuccess": "Employee updated successfully",
+  "deleteSuccess": "Employee deleted successfully",
+  "fetchFailed": "Failed to fetch employee",
+  "createFailed": "Failed to create employee",
+  "updateFailed": "Failed to update employee",
+  "deleteFailed": "Failed to delete employee",
+  "assetAssignSuccess": "Asset assigned to employee successfully",
+  "assetUnassignSuccess": "Asset unassigned from employee successfully",
+  "assetAlreadyAssigned": "This asset is already assigned to this employee",
+  "assetNotAssigned": "This asset is not assigned to this employee",
+  "attachmentAddSuccess": "Attachment added successfully",
+  "attachmentDeleteSuccess": "Attachment deleted successfully",
+  "attachmentNotFound": "Attachment not found or does not belong to this employee"
+}
+
