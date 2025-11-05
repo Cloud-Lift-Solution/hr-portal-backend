@@ -18,6 +18,7 @@ export const swaggerConfig = new DocumentBuilder()
     'JWT-auth',
   )
   .addTag('Assets', 'Asset management endpoints')
+  .addTag('Departments', 'Department management endpoints')
   .addTag('Users', 'User management endpoints')
   .build();
 

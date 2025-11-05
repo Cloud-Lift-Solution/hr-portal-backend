@@ -1,0 +1,12 @@
+{
+  "notFound": "القسم غير موجود",
+  "nameExists": "يوجد قسم بهذا الاسم بالفعل",
+  "createSuccess": "تم إنشاء القسم بنجاح",
+  "updateSuccess": "تم تحديث القسم بنجاح",
+  "deleteSuccess": "تم حذف القسم بنجاح",
+  "fetchFailed": "فشل في جلب القسم",
+  "createFailed": "فشل في إنشاء القسم",
+  "updateFailed": "فشل في تحديث القسم",
+  "deleteFailed": "فشل في حذف القسم"
+}
+

@@ -1,0 +1,12 @@
+{
+  "notFound": "Department not found",
+  "nameExists": "A department with this name already exists",
+  "createSuccess": "Department created successfully",
+  "updateSuccess": "Department updated successfully",
+  "deleteSuccess": "Department deleted successfully",
+  "fetchFailed": "Failed to fetch department",
+  "createFailed": "Failed to create department",
+  "updateFailed": "Failed to update department",
+  "deleteFailed": "Failed to delete department"
+}
+

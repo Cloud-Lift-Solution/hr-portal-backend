@@ -1,0 +1,98 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { DepartmentService } from './department.service';
+import {
+  CreateDepartmentDto,
+  UpdateDepartmentDto,
+  DepartmentResponseDto,
+} from './dto';
+import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
+
+@ApiTags('Departments')
+// @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
+@Controller('departments')
+@UseInterceptors(ClassSerializerInterceptor)
+// @UseGuards(JwtAuthGuard) // Commented out for testing - Remove comment to enable JWT auth
+export class DepartmentController {
+  constructor(private readonly departmentService: DepartmentService) {}
+
+  /**
+   * Get all departments with optional search
+   * GET /departments?search=HR
+   */
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async findAll(
+    @Query('search') search?: string,
+  ): Promise<DepartmentResponseDto[]> {
+    return await this.departmentService.findAll(search);
+  }
+
+  /**
+   * Get single department by ID
+   * GET /departments/:id
+   */
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: string): Promise<DepartmentResponseDto> {
+    return await this.departmentService.findOne(id);
+  }
+
+  /**
+   * Create new department
+   * POST /departments
+   */
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async create(
+    @Body() createDepartmentDto: CreateDepartmentDto,
+    @AcceptLanguage() language: string,
+  ): Promise<DepartmentResponseDto> {
+    return await this.departmentService.create(createDepartmentDto, language);
+  }
+
+  /**
+   * Update existing department
+   * PUT /departments/:id
+   */
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  async update(
+    @Param('id') id: string,
+    @Body() updateDepartmentDto: UpdateDepartmentDto,
+    @AcceptLanguage() language: string,
+  ): Promise<DepartmentResponseDto> {
+    return await this.departmentService.update(
+      id,
+      updateDepartmentDto,
+      language,
+    );
+  }
+
+  /**
+   * Delete department
+   * DELETE /departments/:id
+   */
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async remove(
+    @Param('id') id: string,
+    @AcceptLanguage() language: string,
+  ): Promise<{ message: string }> {
+    return await this.departmentService.remove(id, language);
+  }
+}
+

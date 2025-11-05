@@ -7,6 +7,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from './modules/jwt/jwt.module';
 import { AssetModule } from './modules/asset/asset.module';
+import { DepartmentModule } from './modules/department/department.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AssetModule } from './modules/asset/asset.module';
     UserModule,
     JwtModule,
     AssetModule,
+    DepartmentModule,
   ],
   controllers: [],
   providers: [],

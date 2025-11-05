@@ -22,10 +22,10 @@ import { CreateAssetDto, UpdateAssetDto, AssetResponseDto } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
 
 @ApiTags('Assets')
-// @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
+// @ApiBearerAuth('JWT-auth')
 @Controller('assets')
 @UseInterceptors(ClassSerializerInterceptor)
-// @UseGuards(JwtAuthGuard) // Commented out for testing - Remove comment to enable JWT auth
+// @UseGuards(JwtAuthGuard)
 export class AssetController {
   constructor(private readonly assetService: AssetService) {}
 
