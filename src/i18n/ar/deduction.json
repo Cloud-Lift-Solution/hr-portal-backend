@@ -1,0 +1,16 @@
+{
+  "notFound": "الخصم غير موجود",
+  "employeeNotFoundOrInactive": "الموظف غير موجود أو غير نشط",
+  "monthInvalid": "يجب أن يكون الشهر تاريخًا صالحًا",
+  "amountRequired": "المبلغ مطلوب عند نوع الخصم مالياً",
+  "daysRequired": "الأيام مطلوبة عند نوع الخصم أيام",
+  "amountPositive": "يجب أن يكون المبلغ رقمًا موجبًا",
+  "daysPositive": "يجب أن تكون الأيام عددًا صحيحًا موجبًا",
+  "amountOrDaysRequired": "يجب إدخال المبلغ أو الأيام",
+  "amountAndDaysNotAllowed": "لا يمكن إدخال المبلغ والأيام معًا",
+  "daysMustBeNullForMoney": "يجب أن تكون الأيام فارغة عندما يكون النوع ماليًا",
+  "amountMustBeNullForDays": "يجب أن يكون المبلغ فارغًا عندما يكون النوع أيام",
+  "deleteSuccess": "تم حذف الخصم بنجاح"
+}
+
+

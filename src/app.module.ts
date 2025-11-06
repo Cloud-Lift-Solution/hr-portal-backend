@@ -9,6 +9,7 @@ import { JwtModule } from './modules/jwt/jwt.module';
 import { AssetModule } from './modules/asset/asset.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { EmployeeModule } from './modules/employee/employee.module';
+import { DeductionModule } from './modules/deduction/deduction.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
     AssetModule,
     DepartmentModule,
     EmployeeModule,
+    DeductionModule,
   ],
   controllers: [],
   providers: [],

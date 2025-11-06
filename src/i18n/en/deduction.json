@@ -1,0 +1,16 @@
+{
+  "notFound": "Deduction not found",
+  "employeeNotFoundOrInactive": "Employee not found or inactive",
+  "monthInvalid": "Month must be a valid date",
+  "amountRequired": "Amount is required when type is MONEY",
+  "daysRequired": "Days are required when type is DAYS",
+  "amountPositive": "Amount must be a positive number",
+  "daysPositive": "Days must be a positive integer",
+  "amountOrDaysRequired": "Either amount or days must be provided",
+  "amountAndDaysNotAllowed": "Amount and days cannot both be provided",
+  "daysMustBeNullForMoney": "Days must be null when type is MONEY",
+  "amountMustBeNullForDays": "Amount must be null when type is DAYS",
+  "deleteSuccess": "Deduction deleted successfully"
+}
+
+

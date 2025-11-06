@@ -89,6 +89,13 @@ enum EmployeeStatus {
   DELETED
 }
 
+// ============= DEDUCTION MODELS =============
+
+enum DeductionType {
+  MONEY
+  DAYS
+}
+
 model Employee {
   id                    String          @id @default(uuid())
   name                  String
@@ -112,6 +119,7 @@ model Employee {
 
   assets                EmployeeAsset[]
   attachments           EmployeeAttachment[]
+  deductions            Deduction[]
 
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
@@ -156,4 +164,23 @@ model EmployeeAttachment {
   uploadedAt  DateTime  @default(now())
 
   @@index([employeeId])
+}
+
+// Deduction model
+model Deduction {
+  id         String         @id @default(uuid())
+  type       DeductionType
+  amount     Decimal?       @db.Decimal(12, 2) // Used when type is MONEY
+  days       Int?                           // Used when type is DAYS
+  month      DateTime                       // Any date within the month
+
+  // Relations
+  employeeId String
+  employee   Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([employeeId])
+  @@index([month])
 }
