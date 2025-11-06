@@ -107,56 +107,8 @@ export class EmployeeService {
       );
     }
 
-    // Prepare update data
-    const updateData: any = {};
-
-    if (updateEmployeeDto.name !== undefined)
-      updateData.name = updateEmployeeDto.name;
-    if (updateEmployeeDto.civilId !== undefined)
-      updateData.civilId = updateEmployeeDto.civilId;
-    if (updateEmployeeDto.civilIdExpiryDate !== undefined) {
-      updateData.civilIdExpiryDate = updateEmployeeDto.civilIdExpiryDate
-        ? new Date(updateEmployeeDto.civilIdExpiryDate)
-        : null;
-    }
-    if (updateEmployeeDto.passportNo !== undefined)
-      updateData.passportNo = updateEmployeeDto.passportNo;
-    if (updateEmployeeDto.passportExpiryDate !== undefined) {
-      updateData.passportExpiryDate = updateEmployeeDto.passportExpiryDate
-        ? new Date(updateEmployeeDto.passportExpiryDate)
-        : null;
-    }
-    if (updateEmployeeDto.nationality !== undefined)
-      updateData.nationality = updateEmployeeDto.nationality;
-    if (updateEmployeeDto.jobTitle !== undefined)
-      updateData.jobTitle = updateEmployeeDto.jobTitle;
-    if (updateEmployeeDto.startDate !== undefined) {
-      updateData.startDate = updateEmployeeDto.startDate
-        ? new Date(updateEmployeeDto.startDate)
-        : null;
-    }
-    if (updateEmployeeDto.type !== undefined)
-      updateData.type = updateEmployeeDto.type;
-    if (updateEmployeeDto.salary !== undefined)
-      updateData.salary = updateEmployeeDto.salary;
-    if (updateEmployeeDto.iban !== undefined)
-      updateData.iban = updateEmployeeDto.iban;
-    if (updateEmployeeDto.personalEmail !== undefined)
-      updateData.personalEmail = updateEmployeeDto.personalEmail;
-    if (updateEmployeeDto.companyEmail !== undefined)
-      updateData.companyEmail = updateEmployeeDto.companyEmail;
-    if (updateEmployeeDto.departmentId !== undefined)
-      updateData.departmentId = updateEmployeeDto.departmentId;
-
-    // Handle assets replacement if provided
-    if (updateEmployeeDto.assetIds !== undefined) {
-      updateData.assetIds = updateEmployeeDto.assetIds;
-    }
-
-    // Handle attachments replacement if provided
-    if (updateEmployeeDto.attachments !== undefined) {
-      updateData.attachments = updateEmployeeDto.attachments;
-    }
+    // Prepare update data with field transformations
+    const updateData = this.prepareUpdateData(updateEmployeeDto);
 
     // Update employee
     const updatedEmployee = await this.employeeRepository.update(
@@ -180,6 +132,31 @@ export class EmployeeService {
     return {
       message: await this.i18n.translate('employee.deleteSuccess', { lang }),
     };
+  }
+
+  /**
+   * Prepare update data from DTO with field transformations
+   */
+  private prepareUpdateData(updateEmployeeDto: UpdateEmployeeDto): any {
+    const updateData: any = {};
+
+    // Define fields that need date transformation
+    const dateFields = ['civilIdExpiryDate', 'passportExpiryDate', 'startDate'];
+
+    // Iterate over DTO properties
+    Object.entries(updateEmployeeDto).forEach(([key, value]) => {
+      if (value === undefined) return;
+
+      // Transform date fields
+      if (dateFields.includes(key)) {
+        updateData[key] = value ? new Date(value as string) : null;
+      } else {
+        // Copy value as-is for other fields
+        updateData[key] = value;
+      }
+    });
+
+    return updateData;
   }
 
   /**
