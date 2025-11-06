@@ -102,6 +102,13 @@ export class EmployeeRepository {
     personalEmail?: string;
     companyEmail?: string;
     departmentId?: string;
+    assetIds?: string[];
+    attachments?: Array<{
+      url: string;
+      fileName?: string;
+      fileSize?: number;
+      mimeType?: string;
+    }>;
   }) {
     return this.prisma.employee.create({
       data: {
@@ -119,6 +126,23 @@ export class EmployeeRepository {
         personalEmail: data.personalEmail,
         companyEmail: data.companyEmail,
         departmentId: data.departmentId,
+        assets: data.assetIds?.length
+          ? {
+              create: data.assetIds.map((assetId) => ({
+                assetId,
+              })),
+            }
+          : undefined,
+        attachments: data.attachments?.length
+          ? {
+              create: data.attachments.map((attachment) => ({
+                url: attachment.url,
+                fileName: attachment.fileName,
+                fileSize: attachment.fileSize,
+                mimeType: attachment.mimeType,
+              })),
+            }
+          : undefined,
       },
       include: this.includeRelations,
     });
@@ -144,11 +168,49 @@ export class EmployeeRepository {
       personalEmail: string | null;
       companyEmail: string | null;
       departmentId: string | null;
+      assetIds?: string[];
+      attachments?: Array<{
+        url: string;
+        fileName?: string;
+        fileSize?: number;
+        mimeType?: string;
+      }>;
     }>,
   ) {
+    const updateData: any = { ...data };
+    delete updateData.assetIds;
+    delete updateData.attachments;
+
+    // Handle assets replacement if provided
+    if (data.assetIds !== undefined) {
+      updateData.assets = {
+        deleteMany: {},
+        ...(data.assetIds.length > 0 && {
+          create: data.assetIds.map((assetId) => ({
+            assetId,
+          })),
+        }),
+      };
+    }
+
+    // Handle attachments replacement if provided
+    if (data.attachments !== undefined) {
+      updateData.attachments = {
+        deleteMany: {},
+        ...(data.attachments.length > 0 && {
+          create: data.attachments.map((attachment) => ({
+            url: attachment.url,
+            fileName: attachment.fileName,
+            fileSize: attachment.fileSize,
+            mimeType: attachment.mimeType,
+          })),
+        }),
+      };
+    }
+
     return this.prisma.employee.update({
       where: { id },
-      data,
+      data: updateData,
       include: this.includeRelations,
     });
   }
@@ -288,4 +350,3 @@ export class EmployeeRepository {
     return count > 0;
   }
 }
-

@@ -1,4 +1,4 @@
-import { Injectable, Logger, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, ConflictException } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { EmploymentType } from '@prisma/client';
 import { EmployeeRepository } from './repositories/employee.repository';
@@ -6,8 +6,6 @@ import {
   CreateEmployeeDto,
   UpdateEmployeeDto,
   EmployeeResponseDto,
-  AssignAssetDto,
-  AddAttachmentDto,
 } from './dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
 
@@ -82,6 +80,8 @@ export class EmployeeService {
       personalEmail: createEmployeeDto.personalEmail,
       companyEmail: createEmployeeDto.companyEmail,
       departmentId: createEmployeeDto.departmentId,
+      assetIds: createEmployeeDto.assetIds,
+      attachments: createEmployeeDto.attachments,
     });
 
     return this.mapToResponseDto(employee);
@@ -110,35 +110,59 @@ export class EmployeeService {
     // Prepare update data
     const updateData: any = {};
 
-    if (updateEmployeeDto.name !== undefined) updateData.name = updateEmployeeDto.name;
-    if (updateEmployeeDto.civilId !== undefined) updateData.civilId = updateEmployeeDto.civilId;
+    if (updateEmployeeDto.name !== undefined)
+      updateData.name = updateEmployeeDto.name;
+    if (updateEmployeeDto.civilId !== undefined)
+      updateData.civilId = updateEmployeeDto.civilId;
     if (updateEmployeeDto.civilIdExpiryDate !== undefined) {
       updateData.civilIdExpiryDate = updateEmployeeDto.civilIdExpiryDate
         ? new Date(updateEmployeeDto.civilIdExpiryDate)
         : null;
     }
-    if (updateEmployeeDto.passportNo !== undefined) updateData.passportNo = updateEmployeeDto.passportNo;
+    if (updateEmployeeDto.passportNo !== undefined)
+      updateData.passportNo = updateEmployeeDto.passportNo;
     if (updateEmployeeDto.passportExpiryDate !== undefined) {
       updateData.passportExpiryDate = updateEmployeeDto.passportExpiryDate
         ? new Date(updateEmployeeDto.passportExpiryDate)
         : null;
     }
-    if (updateEmployeeDto.nationality !== undefined) updateData.nationality = updateEmployeeDto.nationality;
-    if (updateEmployeeDto.jobTitle !== undefined) updateData.jobTitle = updateEmployeeDto.jobTitle;
+    if (updateEmployeeDto.nationality !== undefined)
+      updateData.nationality = updateEmployeeDto.nationality;
+    if (updateEmployeeDto.jobTitle !== undefined)
+      updateData.jobTitle = updateEmployeeDto.jobTitle;
     if (updateEmployeeDto.startDate !== undefined) {
       updateData.startDate = updateEmployeeDto.startDate
         ? new Date(updateEmployeeDto.startDate)
         : null;
     }
-    if (updateEmployeeDto.type !== undefined) updateData.type = updateEmployeeDto.type;
-    if (updateEmployeeDto.salary !== undefined) updateData.salary = updateEmployeeDto.salary;
-    if (updateEmployeeDto.iban !== undefined) updateData.iban = updateEmployeeDto.iban;
-    if (updateEmployeeDto.personalEmail !== undefined) updateData.personalEmail = updateEmployeeDto.personalEmail;
-    if (updateEmployeeDto.companyEmail !== undefined) updateData.companyEmail = updateEmployeeDto.companyEmail;
-    if (updateEmployeeDto.departmentId !== undefined) updateData.departmentId = updateEmployeeDto.departmentId;
+    if (updateEmployeeDto.type !== undefined)
+      updateData.type = updateEmployeeDto.type;
+    if (updateEmployeeDto.salary !== undefined)
+      updateData.salary = updateEmployeeDto.salary;
+    if (updateEmployeeDto.iban !== undefined)
+      updateData.iban = updateEmployeeDto.iban;
+    if (updateEmployeeDto.personalEmail !== undefined)
+      updateData.personalEmail = updateEmployeeDto.personalEmail;
+    if (updateEmployeeDto.companyEmail !== undefined)
+      updateData.companyEmail = updateEmployeeDto.companyEmail;
+    if (updateEmployeeDto.departmentId !== undefined)
+      updateData.departmentId = updateEmployeeDto.departmentId;
+
+    // Handle assets replacement if provided
+    if (updateEmployeeDto.assetIds !== undefined) {
+      updateData.assetIds = updateEmployeeDto.assetIds;
+    }
+
+    // Handle attachments replacement if provided
+    if (updateEmployeeDto.attachments !== undefined) {
+      updateData.attachments = updateEmployeeDto.attachments;
+    }
 
     // Update employee
-    const updatedEmployee = await this.employeeRepository.update(id, updateData);
+    const updatedEmployee = await this.employeeRepository.update(
+      id,
+      updateData,
+    );
 
     return this.mapToResponseDto(updatedEmployee);
   }
@@ -155,124 +179,6 @@ export class EmployeeService {
 
     return {
       message: await this.i18n.translate('employee.deleteSuccess', { lang }),
-    };
-  }
-
-  /**
-   * Assign asset to employee
-   */
-  async assignAsset(
-    employeeId: string,
-    assignAssetDto: AssignAssetDto,
-    lang: string,
-  ): Promise<{ message: string }> {
-    // Check if employee exists
-    await this.ensureEmployeeExists(employeeId);
-
-    // Check if asset is already assigned
-    const isAssigned = await this.employeeRepository.isAssetAssigned(
-      employeeId,
-      assignAssetDto.assetId,
-    );
-
-    if (isAssigned) {
-      throw new BadRequestException(
-        await this.i18n.translate('employee.assetAlreadyAssigned', { lang }),
-      );
-    }
-
-    // Assign asset
-    await this.employeeRepository.assignAsset(employeeId, assignAssetDto.assetId);
-
-    return {
-      message: await this.i18n.translate('employee.assetAssignSuccess', { lang }),
-    };
-  }
-
-  /**
-   * Unassign asset from employee
-   */
-  async unassignAsset(
-    employeeId: string,
-    assetId: string,
-    lang: string,
-  ): Promise<{ message: string }> {
-    // Check if employee exists
-    await this.ensureEmployeeExists(employeeId);
-
-    // Check if asset is assigned
-    const isAssigned = await this.employeeRepository.isAssetAssigned(
-      employeeId,
-      assetId,
-    );
-
-    if (!isAssigned) {
-      throw new BadRequestException(
-        await this.i18n.translate('employee.assetNotAssigned', { lang }),
-      );
-    }
-
-    // Unassign asset
-    await this.employeeRepository.unassignAsset(employeeId, assetId);
-
-    return {
-      message: await this.i18n.translate('employee.assetUnassignSuccess', { lang }),
-    };
-  }
-
-  /**
-   * Add attachment to employee
-   */
-  async addAttachment(
-    employeeId: string,
-    addAttachmentDto: AddAttachmentDto,
-    lang: string,
-  ): Promise<{ message: string; attachmentId: string }> {
-    // Check if employee exists
-    await this.ensureEmployeeExists(employeeId);
-
-    // Add attachment
-    const attachment = await this.employeeRepository.addAttachment(employeeId, {
-      url: addAttachmentDto.url,
-      fileName: addAttachmentDto.fileName,
-      fileSize: addAttachmentDto.fileSize,
-      mimeType: addAttachmentDto.mimeType,
-    });
-
-    return {
-      message: await this.i18n.translate('employee.attachmentAddSuccess', { lang }),
-      attachmentId: attachment.id,
-    };
-  }
-
-  /**
-   * Delete attachment
-   */
-  async deleteAttachment(
-    employeeId: string,
-    attachmentId: string,
-    lang: string,
-  ): Promise<{ message: string }> {
-    // Check if employee exists
-    await this.ensureEmployeeExists(employeeId);
-
-    // Check if attachment belongs to employee
-    const belongs = await this.employeeRepository.attachmentBelongsToEmployee(
-      attachmentId,
-      employeeId,
-    );
-
-    if (!belongs) {
-      throw new BadRequestException(
-        await this.i18n.translate('employee.attachmentNotFound', { lang }),
-      );
-    }
-
-    // Delete attachment
-    await this.employeeRepository.deleteAttachment(attachmentId);
-
-    return {
-      message: await this.i18n.translate('employee.attachmentDeleteSuccess', { lang }),
     };
   }
 
@@ -326,16 +232,16 @@ export class EmployeeService {
       personalEmail: employee.personalEmail,
       companyEmail: employee.companyEmail,
       department: employee.department,
-      assets: employee.assets?.map((ea: any) => ({
-        id: ea.asset.id,
-        name: ea.asset.name,
-        serialNumber: ea.asset.serialNumber,
-        assignedAt: ea.assignedAt,
-      })) || [],
+      assets:
+        employee.assets?.map((ea: any) => ({
+          id: ea.asset.id,
+          name: ea.asset.name,
+          serialNumber: ea.asset.serialNumber,
+          assignedAt: ea.assignedAt,
+        })) || [],
       attachments: employee.attachments || [],
       createdAt: employee.createdAt,
       updatedAt: employee.updatedAt,
     };
   }
 }
-

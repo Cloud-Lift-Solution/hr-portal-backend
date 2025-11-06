@@ -9,9 +9,37 @@ import {
   MaxLength,
   IsNumber,
   Min,
+  IsArray,
+  ValidateNested,
+  IsInt,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { EmploymentType } from '@prisma/client';
+
+export class AttachmentDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(2048)
+  @Transform(({ value }) => value?.trim())
+  url: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  @Transform(({ value }) => value?.trim())
+  fileName?: string;
+
+  @IsInt()
+  @IsOptional()
+  @Min(0)
+  fileSize?: number;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  @Transform(({ value }) => value?.trim())
+  mimeType?: string;
+}
 
 export class CreateEmployeeDto {
   @IsString()
@@ -86,5 +114,15 @@ export class CreateEmployeeDto {
   @IsUUID()
   @IsOptional()
   departmentId?: string;
-}
 
+  @IsArray()
+  @IsOptional()
+  @IsUUID('4', { each: true })
+  assetIds?: string[];
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => AttachmentDto)
+  attachments?: AttachmentDto[];
+}

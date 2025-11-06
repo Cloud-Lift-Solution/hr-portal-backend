@@ -9,4 +9,3 @@ import { EmployeeRepository } from './repositories/employee.repository';
   exports: [EmployeeService],
 })
 export class EmployeeModule {}
-

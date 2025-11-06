@@ -19,8 +19,6 @@ import {
   CreateEmployeeDto,
   UpdateEmployeeDto,
   EmployeeResponseDto,
-  AssignAssetDto,
-  AddAttachmentDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
 
@@ -102,69 +100,4 @@ export class EmployeeController {
   ): Promise<{ message: string }> {
     return await this.employeeService.remove(id, language);
   }
-
-  /**
-   * Assign asset to employee
-   * POST /employees/:id/assets
-   */
-  @Post(':id/assets')
-  @HttpCode(HttpStatus.OK)
-  async assignAsset(
-    @Param('id') id: string,
-    @Body() assignAssetDto: AssignAssetDto,
-    @AcceptLanguage() language: string,
-  ): Promise<{ message: string }> {
-    return await this.employeeService.assignAsset(id, assignAssetDto, language);
-  }
-
-  /**
-   * Unassign asset from employee
-   * DELETE /employees/:id/assets/:assetId
-   */
-  @Delete(':id/assets/:assetId')
-  @HttpCode(HttpStatus.OK)
-  async unassignAsset(
-    @Param('id') id: string,
-    @Param('assetId') assetId: string,
-    @AcceptLanguage() language: string,
-  ): Promise<{ message: string }> {
-    return await this.employeeService.unassignAsset(id, assetId, language);
-  }
-
-  /**
-   * Add attachment to employee
-   * POST /employees/:id/attachments
-   */
-  @Post(':id/attachments')
-  @HttpCode(HttpStatus.CREATED)
-  async addAttachment(
-    @Param('id') id: string,
-    @Body() addAttachmentDto: AddAttachmentDto,
-    @AcceptLanguage() language: string,
-  ): Promise<{ message: string; attachmentId: string }> {
-    return await this.employeeService.addAttachment(
-      id,
-      addAttachmentDto,
-      language,
-    );
-  }
-
-  /**
-   * Delete attachment from employee
-   * DELETE /employees/:id/attachments/:attachmentId
-   */
-  @Delete(':id/attachments/:attachmentId')
-  @HttpCode(HttpStatus.OK)
-  async deleteAttachment(
-    @Param('id') id: string,
-    @Param('attachmentId') attachmentId: string,
-    @AcceptLanguage() language: string,
-  ): Promise<{ message: string }> {
-    return await this.employeeService.deleteAttachment(
-      id,
-      attachmentId,
-      language,
-    );
-  }
 }
-
