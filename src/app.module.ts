@@ -6,6 +6,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from './modules/jwt/jwt.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { AssetModule } from './modules/asset/asset.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { EmployeeModule } from './modules/employee/employee.module';
@@ -19,6 +20,7 @@ import { SickLeaveModule } from './modules/sick-leave/sick-leave.module';
     PrismaModule,
     UserModule,
     JwtModule,
+    AuthModule,
     AssetModule,
     DepartmentModule,
     EmployeeModule,

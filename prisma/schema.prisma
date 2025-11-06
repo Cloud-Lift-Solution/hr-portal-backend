@@ -123,6 +123,7 @@ model Employee {
   iban                  String?
   personalEmail         String?
   companyEmail          String?         @unique
+  password              String?         // Hashed password for employee login
   status                EmployeeStatus  @default(ACTIVE)
 
   // Relations
