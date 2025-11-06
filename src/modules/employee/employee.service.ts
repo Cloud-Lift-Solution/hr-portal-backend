@@ -120,18 +120,32 @@ export class EmployeeService {
   }
 
   /**
-   * Delete employee
+   * Soft delete employee
    */
   async remove(id: string, lang: string): Promise<{ message: string }> {
     // Check if employee exists
     await this.ensureEmployeeExists(id);
 
-    // Delete employee
+    // Soft delete employee
     await this.employeeRepository.delete(id);
 
     return {
       message: await this.i18n.translate('employee.deleteSuccess', { lang }),
     };
+  }
+
+  /**
+   * Restore soft-deleted employee
+   */
+  async restore(id: string): Promise<EmployeeResponseDto> {
+    // Restore the employee
+    const restoredEmployee = await this.employeeRepository.restore(id);
+
+    if (!restoredEmployee) {
+      throw TranslatedException.notFound('employee.notFound');
+    }
+
+    return this.mapToResponseDto(restoredEmployee);
   }
 
   /**
@@ -204,6 +218,7 @@ export class EmployeeService {
       jobTitle: employee.jobTitle,
       startDate: employee.startDate,
       type: employee.type,
+      status: employee.status,
       salary: employee.salary ? parseFloat(employee.salary.toString()) : null,
       iban: employee.iban,
       personalEmail: employee.personalEmail,

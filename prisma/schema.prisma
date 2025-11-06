@@ -84,6 +84,11 @@ enum EmploymentType {
   PER_HOUR             
 }
 
+enum EmployeeStatus {
+  ACTIVE
+  DELETED
+}
+
 model Employee {
   id                    String          @id @default(uuid())
   name                  String
@@ -99,6 +104,7 @@ model Employee {
   iban                  String?
   personalEmail         String?
   companyEmail          String?         @unique
+  status                EmployeeStatus  @default(ACTIVE)
 
   // Relations
   departmentId          String?
@@ -109,11 +115,14 @@ model Employee {
 
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
+  deletedAt             DateTime?       // Soft delete timestamp
 
   @@index([departmentId])
   @@index([type])
   @@index([civilId])
   @@index([companyEmail])
+  @@index([deletedAt])
+  @@index([status])
 }
 
 // Junction table for Employee-Asset many-to-many relationship

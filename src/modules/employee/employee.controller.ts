@@ -4,6 +4,7 @@ import {
   Post,
   Put,
   Delete,
+  Patch,
   Body,
   Param,
   Query,
@@ -89,7 +90,7 @@ export class EmployeeController {
   }
 
   /**
-   * Delete employee
+   * Soft delete employee
    * DELETE /employees/:id
    */
   @Delete(':id')
@@ -99,5 +100,15 @@ export class EmployeeController {
     @AcceptLanguage() language: string,
   ): Promise<{ message: string }> {
     return await this.employeeService.remove(id, language);
+  }
+
+  /**
+   * Restore soft-deleted employee
+   * PATCH /employees/:id/restore
+   */
+  @Patch(':id/restore')
+  @HttpCode(HttpStatus.OK)
+  async restore(@Param('id') id: string): Promise<EmployeeResponseDto> {
+    return await this.employeeService.restore(id);
   }
 }

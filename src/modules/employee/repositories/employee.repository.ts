@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { EmploymentType, Prisma } from '@prisma/client';
+import { EmploymentType, EmployeeStatus, Prisma } from '@prisma/client';
 
 @Injectable()
 export class EmployeeRepository {
@@ -31,14 +31,23 @@ export class EmployeeRepository {
   };
 
   /**
-   * Find all employees with optional filters
+   * Base where condition to filter only active employees
+   */
+  private readonly activeCondition = {
+    status: EmployeeStatus.ACTIVE,
+  };
+
+  /**
+   * Find all employees with optional filters (only active employees)
    */
   async findAll(filters?: {
     search?: string;
     departmentId?: string;
     type?: EmploymentType;
   }) {
-    const where: Prisma.EmployeeWhereInput = {};
+    const where: Prisma.EmployeeWhereInput = {
+      ...this.activeCondition,
+    };
 
     if (filters?.search) {
       where.OR = [
@@ -66,21 +75,27 @@ export class EmployeeRepository {
   }
 
   /**
-   * Find employee by ID
+   * Find employee by ID (only active employees)
    */
   async findById(id: string) {
-    return this.prisma.employee.findUnique({
-      where: { id },
+    return this.prisma.employee.findFirst({
+      where: {
+        id,
+        ...this.activeCondition,
+      },
       include: this.includeRelations,
     });
   }
 
   /**
-   * Find employee by company email
+   * Find employee by company email (only active employees)
    */
   async findByCompanyEmail(companyEmail: string) {
     return this.prisma.employee.findFirst({
-      where: { companyEmail },
+      where: {
+        companyEmail,
+        ...this.activeCondition,
+      },
     });
   }
 
@@ -216,26 +231,56 @@ export class EmployeeRepository {
   }
 
   /**
-   * Delete employee
+   * Soft delete employee (set status to DELETED)
    */
   async delete(id: string) {
+    return this.prisma.employee.update({
+      where: { id },
+      data: {
+        status: EmployeeStatus.DELETED,
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  /**
+   * Restore deleted employee (set status back to ACTIVE)
+   */
+  async restore(id: string) {
+    return this.prisma.employee.update({
+      where: { id },
+      data: {
+        status: EmployeeStatus.ACTIVE,
+        deletedAt: null,
+      },
+      include: this.includeRelations,
+    });
+  }
+
+  /**
+   * Permanently delete employee (hard delete)
+   */
+  async permanentDelete(id: string) {
     return this.prisma.employee.delete({
       where: { id },
     });
   }
 
   /**
-   * Check if employee exists
+   * Check if employee exists (only active employees)
    */
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.employee.count({
-      where: { id },
+      where: {
+        id,
+        ...this.activeCondition,
+      },
     });
     return count > 0;
   }
 
   /**
-   * Check if company email exists (excluding specific employee)
+   * Check if company email exists (only active employees, excluding specific employee)
    */
   async companyEmailExists(
     companyEmail: string,
@@ -244,6 +289,7 @@ export class EmployeeRepository {
     const count = await this.prisma.employee.count({
       where: {
         companyEmail,
+        ...this.activeCondition,
         ...(excludeEmployeeId && { id: { not: excludeEmployeeId } }),
       },
     });

@@ -1,4 +1,4 @@
-import { EmploymentType } from '@prisma/client';
+import { EmploymentType, EmployeeStatus } from '@prisma/client';
 
 export class DepartmentInfoDto {
   id: string;
@@ -32,6 +32,7 @@ export class EmployeeResponseDto {
   jobTitle: string | null;
   startDate: Date | null;
   type: EmploymentType;
+  status: EmployeeStatus;
   salary: number | null;
   iban: string | null;
   personalEmail: string | null;
