@@ -1,4 +1,3 @@
-// dto/deduction-query.dto.ts
 import { IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 

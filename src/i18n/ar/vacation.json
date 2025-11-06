@@ -1,0 +1,11 @@
+{
+  "notFound": "الإجازة غير موجودة",
+  "employeeNotFoundOrInactive": "الموظف غير موجود أو غير نشط",
+  "departureInvalid": "تاريخ بداية الإجازة غير صالح",
+  "returnInvalid": "تاريخ نهاية الإجازة غير صالح",
+  "returnBeforeDeparture": "تاريخ العودة يجب أن يكون بعد أو مساويًا لتاريخ البداية",
+  "overlapExists": "تواريخ الإجازة تتداخل مع إجازة أخرى لنفس الموظف",
+  "deleteSuccess": "تم حذف الإجازة بنجاح"
+}
+
+

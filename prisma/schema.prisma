@@ -96,6 +96,18 @@ enum DeductionType {
   DAYS
 }
 
+// ============= VACATION MODELS =============
+
+enum VacationReason {
+  EMERGENCY_LEAVE
+  ANNUAL_LEAVE
+}
+
+enum VacationType {
+  PAID
+  NOT_PAID
+}
+
 model Employee {
   id                    String          @id @default(uuid())
   name                  String
@@ -120,6 +132,7 @@ model Employee {
   assets                EmployeeAsset[]
   attachments           EmployeeAttachment[]
   deductions            Deduction[]
+  vacations             Vacation[]
 
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
@@ -183,4 +196,26 @@ model Deduction {
 
   @@index([employeeId])
   @@index([month])
+}
+
+// Vacation model
+model Vacation {
+  id            String          @id @default(uuid())
+  employeeId    String
+  employee      Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  departureDay  DateTime
+  returnDay     DateTime
+
+  reason        VacationReason
+  type          VacationType
+
+  numberOfDays  Int
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([employeeId])
+  @@index([departureDay])
+  @@index([returnDay])
 }
