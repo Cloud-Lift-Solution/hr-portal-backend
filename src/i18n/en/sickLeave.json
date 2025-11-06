@@ -1,0 +1,11 @@
+{
+  "notFound": "Sick leave not found",
+  "employeeNotFoundOrInactive": "Employee not found or inactive",
+  "departureInvalid": "Departure day must be a valid date",
+  "returnInvalid": "Return day must be a valid date",
+  "returnBeforeDeparture": "Return day must be after or equal to departure day",
+  "overlapExists": "Sick leave dates overlap with an existing record for this employee",
+  "deleteSuccess": "Sick leave deleted successfully"
+}
+
+

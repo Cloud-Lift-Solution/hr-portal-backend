@@ -133,6 +133,7 @@ model Employee {
   attachments           EmployeeAttachment[]
   deductions            Deduction[]
   vacations             Vacation[]
+  sickLeaves            SickLeave[]
 
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
@@ -214,6 +215,26 @@ model Vacation {
 
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+
+  @@index([employeeId])
+  @@index([departureDay])
+  @@index([returnDay])
+}
+
+// SickLeave model
+model SickLeave {
+  id            String   @id @default(uuid())
+  employeeId    String
+  employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  departureDay  DateTime
+  returnDay     DateTime
+  reason        String?  @db.VarChar(500)
+  numberOfDays  Int
+  attachmentUrl String?  @db.Text
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([employeeId])
   @@index([departureDay])
