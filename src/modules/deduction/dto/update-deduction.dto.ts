@@ -32,5 +32,3 @@ export class UpdateDeductionDto {
   @IsDateString()
   month?: string;
 }
-
-

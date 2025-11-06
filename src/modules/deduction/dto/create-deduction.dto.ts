@@ -29,5 +29,3 @@ export class CreateDeductionDto {
   @IsDateString()
   month: string;
 }
-
-

@@ -3,10 +3,12 @@ import { I18nService } from 'nestjs-i18n';
 import { DeductionType } from '@prisma/client';
 import { DeductionRepository } from './repositories/deduction.repository';
 import { EmployeeRepository } from '../employee/repositories/employee.repository';
-import { CreateDeductionDto } from './dto/create-deduction.dto';
-import { UpdateDeductionDto } from './dto/update-deduction.dto';
-import { DeductionResponseDto } from './dto/deduction-response.dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
+import {
+  CreateDeductionDto,
+  UpdateDeductionDto,
+  DeductionResponseDto,
+} from './dto';
 
 @Injectable()
 export class DeductionService {
