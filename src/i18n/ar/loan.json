@@ -1,0 +1,14 @@
+{
+  "createSuccess": "تم إنشاء القرض بنجاح",
+  "paymentRecorded": "تم تسجيل الدفعة بنجاح",
+  "notFound": "القرض غير موجود",
+  "alreadyCompleted": "تم سداد هذا القرض بالكامل",
+  "invalidAmount": "يجب أن يكون مبلغ القرض أكبر من 0",
+  "invalidInstallments": "يجب أن يكون عدد الأقساط على الأقل 1",
+  "monthYearRequired": "الشهر والسنة مطلوبان لقروض الرواتب",
+  "monthYearNotAllowed": "لا ينبغي تقديم الشهر والسنة لأنواع القروض الأخرى",
+  "invalidMonth": "يجب أن يكون الشهر بين 1 و 12",
+  "invalidYear": "لا يمكن أن تكون السنة في الماضي",
+  "employeeNotFound": "الموظف غير موجود أو غير نشط",
+  "cannotOverpay": "لا يمكن تسجيل دفعات أكثر من إجمالي الأقساط"
+}

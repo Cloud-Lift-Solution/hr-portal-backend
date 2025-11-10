@@ -1,0 +1,14 @@
+{
+  "createSuccess": "Loan created successfully",
+  "paymentRecorded": "Payment recorded successfully",
+  "notFound": "Loan not found",
+  "alreadyCompleted": "This loan is already fully paid",
+  "invalidAmount": "Loan amount must be greater than 0",
+  "invalidInstallments": "Number of installments must be at least 1",
+  "monthYearRequired": "Month and year are required for payroll loans",
+  "monthYearNotAllowed": "Month and year should not be provided for non-payroll loans",
+  "invalidMonth": "Month must be between 1 and 12",
+  "invalidYear": "Year cannot be in the past",
+  "employeeNotFound": "Employee not found or inactive",
+  "cannotOverpay": "Cannot record more payments than total installments"
+}

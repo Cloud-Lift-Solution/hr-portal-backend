@@ -14,6 +14,7 @@ import { DeductionModule } from './modules/deduction/deduction.module';
 import { VacationModule } from './modules/vacation/vacation.module';
 import { SickLeaveModule } from './modules/sick-leave/sick-leave.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
+import { LoanModule } from './modules/loan/loan.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
     VacationModule,
     SickLeaveModule,
     AttendanceModule,
+    LoanModule,
   ],
   controllers: [],
   providers: [],
