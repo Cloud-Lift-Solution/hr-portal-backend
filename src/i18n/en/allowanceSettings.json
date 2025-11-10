@@ -1,0 +1,11 @@
+{
+  "updateSuccess": "Allowance settings updated successfully",
+  "allowanceNotFound": "One or more allowance IDs are invalid",
+  "employeeNotFound": "One or more employee IDs are invalid or inactive",
+  "conflictVacations": "An allowance cannot be in both 'in vacations' and 'not in vacations' lists",
+  "conflictSickLeave": "An allowance cannot be in both 'in sick leave' and 'not in sick leave' lists",
+  "invalidBoolean": "Toggle values must be true or false",
+  "invalidUUID": "Invalid ID format provided",
+  "duplicateIds": "Duplicate IDs found in array"
+}
+
