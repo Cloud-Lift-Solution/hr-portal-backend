@@ -335,3 +335,16 @@ model Loan {
   @@index([status])
   @@index([employeeId, status])
 }
+
+// ============= ALLOWANCE MODEL =============
+
+model Allowance {
+  id        String   @id @default(uuid())
+  name      String   @unique  // Allowance name (e.g., Transportation, Housing, Food)
+  fees      Decimal  @db.Decimal(12, 2)  // Default allowance amount
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([name])
+}
