@@ -375,3 +375,37 @@ model AllowanceSettings {
 
   @@map("allowance_settings")
 }
+
+// ============= ORGANIZATION MODELS =============
+
+model Organization {
+  id   String @id @default(uuid())
+  name String @unique // Primary/main organization name
+
+  // Relations
+  additionalNames OrganizationName[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("organizations")
+}
+
+model OrganizationName {
+  id            String  @id @default(uuid())
+  name          String // Additional name (e.g., Arabic name, Trade name)
+  attachmentUrl String? @db.Text // S3 URL for supporting document
+  order         Int // Display order (1, 2, 3...)
+
+  // Relations
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([organizationId, order])
+  @@map("organization_names")
+}
