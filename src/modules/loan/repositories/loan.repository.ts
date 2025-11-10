@@ -91,7 +91,6 @@ export class LoanRepository {
       where.employee = {
         name: {
           contains: filters.search,
-          mode: 'insensitive',
         },
       };
     }
