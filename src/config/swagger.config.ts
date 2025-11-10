@@ -21,4 +21,6 @@ export const swaggerConfig = new DocumentBuilder()
   .addTag('Departments', 'Department management endpoints')
   .addTag('Employees', 'Employee management endpoints')
   .addTag('Users', 'User management endpoints')
+  .addTag('Loans', 'Loan management endpoints')
+  .addTag('Allowances', 'Allowance management endpoints')
   .build();

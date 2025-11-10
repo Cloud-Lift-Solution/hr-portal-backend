@@ -1,0 +1,14 @@
+{
+  "createSuccess": "Allowance created successfully",
+  "updateSuccess": "Allowance updated successfully",
+  "deleteSuccess": "Allowance deleted successfully",
+  "notFound": "Allowance not found",
+  "nameRequired": "Allowance name is required",
+  "nameExists": "Allowance with this name already exists",
+  "nameTooShort": "Allowance name must be at least 2 characters",
+  "nameTooLong": "Allowance name cannot exceed 100 characters",
+  "feesRequired": "Fees is required",
+  "feesPositive": "Fees must be greater than 0",
+  "feesInvalid": "Fees must be a valid number",
+  "atLeastOneField": "At least one field (name or fees) must be provided"
+}
