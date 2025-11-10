@@ -55,9 +55,7 @@ async function bootstrap() {
   logger.log(
     `🌍 API available at: http://localhost:${envConfig.port}/${appConfig.globalPrefix}`,
   );
-  logger.log(
-    `📚 Swagger Docs: http://localhost:${envConfig.port}/api-docs`,
-  );
+  logger.log(`📚 Swagger Docs: http://localhost:${envConfig.port}/api-docs`);
 }
 
 bootstrap();

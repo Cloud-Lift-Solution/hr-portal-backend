@@ -22,4 +22,3 @@ export const swaggerConfig = new DocumentBuilder()
   .addTag('Employees', 'Employee management endpoints')
   .addTag('Users', 'User management endpoints')
   .build();
-

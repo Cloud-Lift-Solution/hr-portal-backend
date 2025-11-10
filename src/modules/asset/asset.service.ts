@@ -195,7 +195,7 @@ export class AssetService {
 
     if (exists) {
       throw new ConflictException(
-        await this.i18n.translate('asset.serialNumberExists', { lang }),
+        this.i18n.translate('asset.serialNumberExists', { lang }),
       );
     }
   }

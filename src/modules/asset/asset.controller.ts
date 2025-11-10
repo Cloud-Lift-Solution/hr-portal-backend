@@ -9,7 +9,6 @@ import {
   Query,
   HttpCode,
   HttpStatus,
-  // UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
   ParseIntPipe,

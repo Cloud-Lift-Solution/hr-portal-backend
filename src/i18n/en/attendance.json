@@ -1,0 +1,15 @@
+{
+  "alreadyClockedIn": "You have already clocked in today",
+  "alreadyClockedOut": "You have already clocked out today",
+  "noClockInFound": "No clock-in record found for today. Please clock in first.",
+  "clockInSuccess": "Clocked in successfully",
+  "clockOutSuccess": "Clocked out successfully",
+  "alreadyOnBreak": "You are already on break",
+  "notOnBreak": "You are not on break",
+  "breakStartSuccess": "Break started successfully",
+  "backToWorkSuccess": "Back to work successfully",
+  "cannotClockOutOnBreak": "You are currently on break. Please return to work before clocking out",
+  "unclosedBreak": "Please end your break before clocking out",
+  "invalidDateRange": "End date must be after or equal to start date",
+  "employeeNotActive": "Employee account is not active"
+}
