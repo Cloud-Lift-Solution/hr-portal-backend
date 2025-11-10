@@ -108,6 +108,14 @@ enum VacationType {
   NOT_PAID
 }
 
+// ============= ATTENDANCE MODELS =============
+
+enum AttendanceStatus {
+  CLOCKED_IN
+  ON_BREAK
+  CLOCKED_OUT
+}
+
 model Employee {
   id                    String          @id @default(uuid())
   name                  String
@@ -135,6 +143,7 @@ model Employee {
   deductions            Deduction[]
   vacations             Vacation[]
   sickLeaves            SickLeave[]
+  attendances           Attendance[]
 
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
@@ -240,4 +249,46 @@ model SickLeave {
   @@index([employeeId])
   @@index([departureDay])
   @@index([returnDay])
+}
+
+model Attendance {
+  id                  String            @id @default(uuid())
+  
+  employeeId          String
+  employee            Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  date                DateTime          @db.Date
+  clockInTime         DateTime
+  clockOutTime        DateTime?
+  
+  totalHours          Decimal?          @db.Decimal(5, 2)
+  totalBreakMinutes   Int               @default(0)
+  
+  status              AttendanceStatus  @default(CLOCKED_IN)
+  
+  breaks              AttendanceBreak[]
+  
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  
+  @@unique([employeeId, date])
+  @@index([employeeId])
+  @@index([date])
+  @@index([status])
+  @@index([employeeId, date])
+}
+
+model AttendanceBreak {
+  id            String      @id @default(uuid())
+  
+  attendanceId  String
+  attendance    Attendance  @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  
+  breakStart    DateTime
+  breakEnd      DateTime?
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([attendanceId])
 }
