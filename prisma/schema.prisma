@@ -23,37 +23,37 @@ model User {
 // ============= ASSET MODELS =============
 
 enum AssetType {
-  WITH_SERIAL_NUMBER                    // مع الرقم التسلسلي
-  WITH_CATEGORIES                       // مع أصناف
-  WITH_SERIAL_NUMBER_AND_CATEGORIES     // مع الرقم التسلسلي و أصناف
+  WITH_SERIAL_NUMBER // مع الرقم التسلسلي
+  WITH_CATEGORIES // مع أصناف
+  WITH_SERIAL_NUMBER_AND_CATEGORIES // مع الرقم التسلسلي و أصناف
 }
 
 model Asset {
-  id           String     @id @default(uuid())
-  name         String     // الإسم
-  serialNumber String?    // الرقم التسلسلي (optional based on type)
-  type         AssetType  // Type of asset entry
+  id           String    @id @default(uuid())
+  name         String // الإسم
+  serialNumber String? // الرقم التسلسلي (optional based on type)
+  type         AssetType // Type of asset entry
 
   // Relations
-  categories   AssetCategory[]   @relation("AssetCategories")
-  employees    EmployeeAsset[]
+  categories AssetCategory[] @relation("AssetCategories")
+  employees  EmployeeAsset[]
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([serialNumber])
 }
 
 model AssetCategory {
-  id          String   @id @default(uuid())
-  name        String   // صنف (category name)
+  id   String @id @default(uuid())
+  name String // صنف (category name)
 
   // Relations
-  assetId     String
-  asset       Asset    @relation("AssetCategories", fields: [assetId], references: [id], onDelete: Cascade)
+  assetId String
+  asset   Asset  @relation("AssetCategories", fields: [assetId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([assetId])
 }
@@ -61,8 +61,8 @@ model AssetCategory {
 // ============= DEPARTMENT MODEL =============
 
 model Department {
-  id        String   @id @default(uuid())
-  name      String   @unique  // Department name (must be unique)
+  id   String @id @default(uuid())
+  name String @unique // Department name (must be unique)
 
   // Relations
   employees Employee[]
@@ -76,12 +76,12 @@ model Department {
 // ============= EMPLOYEE MODELS =============
 
 enum EmploymentType {
-  FULL_TIME                
-  PART_TIME               
-  INDEPENDENT_CONTRACTOR   
-  TEMPORARY_EMPLOYEE    
-  INTERN                  
-  PER_HOUR             
+  FULL_TIME
+  PART_TIME
+  INDEPENDENT_CONTRACTOR
+  TEMPORARY_EMPLOYEE
+  INTERN
+  PER_HOUR
 }
 
 enum EmployeeStatus {
@@ -117,38 +117,38 @@ enum AttendanceStatus {
 }
 
 model Employee {
-  id                    String          @id @default(uuid())
-  name                  String
-  civilId               String?
-  civilIdExpiryDate     DateTime?
-  passportNo            String?
-  passportExpiryDate    DateTime?
-  nationality           String?
-  jobTitle              String?
-  startDate             DateTime?
-  type                  EmploymentType
-  salary                Decimal?        @db.Decimal(12, 2)
-  iban                  String?
-  personalEmail         String?
-  companyEmail          String?         @unique
-  password              String?         // Hashed password for employee login
-  status                EmployeeStatus  @default(ACTIVE)
+  id                 String         @id @default(uuid())
+  name               String
+  civilId            String?
+  civilIdExpiryDate  DateTime?
+  passportNo         String?
+  passportExpiryDate DateTime?
+  nationality        String?
+  jobTitle           String?
+  startDate          DateTime?
+  type               EmploymentType
+  salary             Decimal?       @db.Decimal(12, 2)
+  iban               String?
+  personalEmail      String?
+  companyEmail       String?        @unique
+  password           String? // Hashed password for employee login
+  status             EmployeeStatus @default(ACTIVE)
 
   // Relations
-  departmentId          String?
-  department            Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
 
-  assets                EmployeeAsset[]
-  attachments           EmployeeAttachment[]
-  deductions            Deduction[]
-  vacations             Vacation[]
-  sickLeaves            SickLeave[]
-  attendances           Attendance[]
-  loans                 Loan[]
+  assets      EmployeeAsset[]
+  attachments EmployeeAttachment[]
+  deductions  Deduction[]
+  vacations   Vacation[]
+  sickLeaves  SickLeave[]
+  attendances Attendance[]
+  loans       Loan[]
 
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
-  deletedAt             DateTime?       // Soft delete timestamp
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete timestamp
 
   @@index([departmentId])
   @@index([type])
@@ -160,15 +160,15 @@ model Employee {
 
 // Junction table for Employee-Asset many-to-many relationship
 model EmployeeAsset {
-  id          String    @id @default(uuid())
+  id String @id @default(uuid())
 
-  employeeId  String
-  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
-  assetId     String
-  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  assetId String
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
-  assignedAt  DateTime  @default(now())
+  assignedAt DateTime @default(now())
 
   @@unique([employeeId, assetId])
   @@index([employeeId])
@@ -177,34 +177,34 @@ model EmployeeAsset {
 
 // Employee attachments 
 model EmployeeAttachment {
-  id          String    @id @default(uuid())
-  url         String    @db.Text  // S3 URL
-  fileName    String?   // Original file name for reference
-  fileSize    Int?      // File size in bytes
-  mimeType    String?   // MIME type (e.g., image/png, application/pdf)
+  id       String  @id @default(uuid())
+  url      String  @db.Text // S3 URL
+  fileName String? // Original file name for reference
+  fileSize Int? // File size in bytes
+  mimeType String? // MIME type (e.g., image/png, application/pdf)
 
-  employeeId  String
-  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
-  uploadedAt  DateTime  @default(now())
+  uploadedAt DateTime @default(now())
 
   @@index([employeeId])
 }
 
 // Deduction model
 model Deduction {
-  id         String         @id @default(uuid())
-  type       DeductionType
-  amount     Decimal?       @db.Decimal(12, 2) // Used when type is MONEY
-  days       Int?                           // Used when type is DAYS
-  month      DateTime                       // Any date within the month
+  id     String        @id @default(uuid())
+  type   DeductionType
+  amount Decimal?      @db.Decimal(12, 2) // Used when type is MONEY
+  days   Int? // Used when type is DAYS
+  month  DateTime // Any date within the month
 
   // Relations
   employeeId String
-  employee   Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([employeeId])
   @@index([month])
@@ -212,20 +212,20 @@ model Deduction {
 
 // Vacation model
 model Vacation {
-  id            String          @id @default(uuid())
-  employeeId    String
-  employee      Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
-  departureDay  DateTime
-  returnDay     DateTime
+  departureDay DateTime
+  returnDay    DateTime
 
-  reason        VacationReason
-  type          VacationType
+  reason VacationReason
+  type   VacationType
 
-  numberOfDays  Int
+  numberOfDays Int
 
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([employeeId])
   @@index([departureDay])
@@ -234,9 +234,9 @@ model Vacation {
 
 // SickLeave model
 model SickLeave {
-  id            String   @id @default(uuid())
-  employeeId    String
-  employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   departureDay  DateTime
   returnDay     DateTime
@@ -244,8 +244,8 @@ model SickLeave {
   numberOfDays  Int
   attachmentUrl String?  @db.Text
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([employeeId])
   @@index([departureDay])
@@ -253,25 +253,25 @@ model SickLeave {
 }
 
 model Attendance {
-  id                  String            @id @default(uuid())
-  
-  employeeId          String
-  employee            Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  
-  date                DateTime          @db.Date
-  clockInTime         DateTime
-  clockOutTime        DateTime?
-  
-  totalHours          Decimal?          @db.Decimal(5, 2)
-  totalBreakMinutes   Int               @default(0)
-  
-  status              AttendanceStatus  @default(CLOCKED_IN)
-  
-  breaks              AttendanceBreak[]
-  
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  
+  id String @id @default(uuid())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  date         DateTime  @db.Date
+  clockInTime  DateTime
+  clockOutTime DateTime?
+
+  totalHours        Decimal? @db.Decimal(5, 2)
+  totalBreakMinutes Int      @default(0)
+
+  status AttendanceStatus @default(CLOCKED_IN)
+
+  breaks AttendanceBreak[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([employeeId, date])
   @@index([employeeId])
   @@index([date])
@@ -280,17 +280,17 @@ model Attendance {
 }
 
 model AttendanceBreak {
-  id            String      @id @default(uuid())
-  
-  attendanceId  String
-  attendance    Attendance  @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
-  
-  breakStart    DateTime
-  breakEnd      DateTime?
-  
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  
+  id String @id @default(uuid())
+
+  attendanceId String
+  attendance   Attendance @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+
+  breakStart DateTime
+  breakEnd   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([attendanceId])
 }
 
@@ -310,27 +310,27 @@ enum LoanStatus {
 }
 
 model Loan {
-  id                      String      @id @default(uuid())
-  
-  employeeId              String
-  employee                Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  
-  loanAmount              Decimal     @db.Decimal(12, 2)
-  type                    LoanType
-  numberOfInstallments    Int
-  numberOfPaymentsMade    Int         @default(0)
-  
+  id String @id @default(uuid())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  loanAmount           Decimal  @db.Decimal(12, 2)
+  type                 LoanType
+  numberOfInstallments Int
+  numberOfPaymentsMade Int      @default(0)
+
   // Only for ADD_TO_PAYROLL type
-  month                   Int?        // 1-12
-  year                    Int?        // e.g., 2025
-  
-  paymentStartDate        DateTime
-  note                    String?     @db.VarChar(500)
-  status                  LoanStatus  @default(NOT_STARTED)
-  
-  createdAt               DateTime    @default(now())
-  updatedAt               DateTime    @updatedAt
-  
+  month Int? // 1-12
+  year  Int? // e.g., 2025
+
+  paymentStartDate DateTime
+  note             String?    @db.VarChar(500)
+  status           LoanStatus @default(NOT_STARTED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([employeeId])
   @@index([status])
   @@index([employeeId, status])
@@ -339,12 +339,39 @@ model Loan {
 // ============= ALLOWANCE MODEL =============
 
 model Allowance {
-  id        String   @id @default(uuid())
-  name      String   @unique  // Allowance name (e.g., Transportation, Housing, Food)
-  fees      Decimal  @db.Decimal(12, 2)  // Default allowance amount
-  
+  id   String  @id @default(uuid())
+  name String  @unique // Allowance name (e.g., Transportation, Housing, Food)
+  fees Decimal @db.Decimal(12, 2) // Default allowance amount
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([name])
+}
+
+// ============= ALLOWANCE SETTINGS MODEL =============
+
+model AllowanceSettings {
+  id String @id @default(uuid())
+
+  // Feature toggles
+  vacationsEnabled         Boolean @default(true)
+  sickLeaveEnabled         Boolean @default(true)
+  excludedEmployeesEnabled Boolean @default(true)
+
+  // Vacation settings - JSON array of allowance IDs
+  allowancesInVacations    Json @default("[]") // Allowances that continue during vacation
+  allowancesNotInVacations Json @default("[]") // Allowances that stop during vacation
+
+  // Sick Leave settings - JSON array of allowance IDs
+  allowancesInSickLeave    Json @default("[]") // Allowances that continue during sick leave
+  allowancesNotInSickLeave Json @default("[]") // Allowances that stop during sick leave
+
+  // Employee exclusions - JSON array of employee IDs
+  excludedEmployeeIds Json @default("[]") // Employees exempt from these rules
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("allowance_settings")
 }
