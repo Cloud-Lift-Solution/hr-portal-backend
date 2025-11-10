@@ -82,7 +82,10 @@ export class DepartmentRepository {
   /**
    * Check if department name exists (excluding specific department ID)
    */
-  async nameExists(name: string, excludeDepartmentId?: string): Promise<boolean> {
+  async nameExists(
+    name: string,
+    excludeDepartmentId?: string,
+  ): Promise<boolean> {
     const count = await this.prisma.department.count({
       where: {
         name,
@@ -92,4 +95,3 @@ export class DepartmentRepository {
     return count > 0;
   }
 }
-

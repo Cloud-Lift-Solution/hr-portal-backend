@@ -9,4 +9,3 @@ import { DepartmentRepository } from './repositories/department.repository';
   exports: [DepartmentService],
 })
 export class DepartmentModule {}
-

@@ -95,4 +95,3 @@ export class DepartmentController {
     return await this.departmentService.remove(id, language);
   }
 }
-

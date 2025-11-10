@@ -198,7 +198,7 @@ export class EmployeeService {
 
     if (exists) {
       throw new ConflictException(
-        await this.i18n.translate('employee.companyEmailExists', { lang }),
+        this.i18n.translate('employee.companyEmailExists', { lang }),
       );
     }
   }

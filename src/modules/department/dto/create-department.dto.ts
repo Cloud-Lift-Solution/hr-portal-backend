@@ -8,4 +8,3 @@ export class CreateDepartmentDto {
   @Transform(({ value }) => value?.trim())
   name: string;
 }
-

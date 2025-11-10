@@ -4,4 +4,3 @@ export class DepartmentResponseDto {
   createdAt: Date;
   updatedAt: Date;
 }
-

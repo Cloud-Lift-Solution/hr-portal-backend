@@ -69,11 +69,7 @@ export class DepartmentService {
 
     // Check if name already exists (if name is being updated)
     if (updateDepartmentDto.name) {
-      await this.validateNameUniqueness(
-        updateDepartmentDto.name,
-        lang,
-        id,
-      );
+      await this.validateNameUniqueness(updateDepartmentDto.name, lang, id);
     }
 
     // Update department
@@ -125,9 +121,8 @@ export class DepartmentService {
 
     if (exists) {
       throw new ConflictException(
-        await this.i18n.translate('department.nameExists', { lang }),
+        this.i18n.translate('department.nameExists', { lang }),
       );
     }
   }
 }
-

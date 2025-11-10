@@ -13,6 +13,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
 import { DeductionModule } from './modules/deduction/deduction.module';
 import { VacationModule } from './modules/vacation/vacation.module';
 import { SickLeaveModule } from './modules/sick-leave/sick-leave.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SickLeaveModule } from './modules/sick-leave/sick-leave.module';
     DeductionModule,
     VacationModule,
     SickLeaveModule,
+    AttendanceModule,
   ],
   controllers: [],
   providers: [],
