@@ -55,7 +55,7 @@ export class AllowanceSettingsController {
   @ApiOperation({
     summary: 'Update allowance settings',
     description:
-      'Update system-wide allowance settings. Creates settings if they don\'t exist (singleton pattern). All fields are optional for partial updates.',
+      "Update system-wide allowance settings. Creates settings if they don't exist (singleton pattern). All fields are optional for partial updates.",
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -77,4 +77,3 @@ export class AllowanceSettingsController {
     );
   }
 }
-
