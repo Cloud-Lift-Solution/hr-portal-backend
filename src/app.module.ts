@@ -17,6 +17,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
 import { LoanModule } from './modules/loan/loan.module';
 import { AllowanceModule } from './modules/allowance/allowance.module';
 import { AllowanceSettingsModule } from './modules/allowance-settings/allowance-settings.module';
+import { OrganizationModule } from './modules/organization/organization.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AllowanceSettingsModule } from './modules/allowance-settings/allowance-
     LoanModule,
     AllowanceModule,
     AllowanceSettingsModule,
+    OrganizationModule,
   ],
   controllers: [],
   providers: [],

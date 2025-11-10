@@ -1,0 +1,15 @@
+{
+  "createSuccess": "Organization created successfully",
+  "updateSuccess": "Organization updated successfully",
+  "deleteSuccess": "Organization deleted successfully",
+  "notFound": "Organization not found",
+  "nameRequired": "Organization name is required",
+  "nameExists": "Organization with this name already exists",
+  "nameTooShort": "Organization name must be at least 2 characters",
+  "nameTooLong": "Organization name cannot exceed 200 characters",
+  "additionalNameRequired": "Additional name is required",
+  "invalidUrl": "Invalid attachment URL format",
+  "urlTooLong": "Attachment URL cannot exceed 2048 characters",
+  "atLeastOneField": "At least one field (name or additionalNames) must be provided"
+}
+
