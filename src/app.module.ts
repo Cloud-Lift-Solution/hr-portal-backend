@@ -18,6 +18,8 @@ import { LoanModule } from './modules/loan/loan.module';
 import { AllowanceModule } from './modules/allowance/allowance.module';
 import { AllowanceSettingsModule } from './modules/allowance-settings/allowance-settings.module';
 import { OrganizationModule } from './modules/organization/organization.module';
+import { LeadModule } from './modules/lead/lead.module';
+import { ProjectModule } from './modules/project/project.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { OrganizationModule } from './modules/organization/organization.module';
     AllowanceModule,
     AllowanceSettingsModule,
     OrganizationModule,
+    LeadModule,
+    ProjectModule,
   ],
   controllers: [],
   providers: [],
