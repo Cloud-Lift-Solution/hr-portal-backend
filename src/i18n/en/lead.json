@@ -1,0 +1,10 @@
+{
+  "notFound": "Lead not found",
+  "invalidEmail": "Client email must be a valid email address",
+  "invalidPhone": "Client phone must be a valid phone number in E.164 format",
+  "duplicateEmail": "A lead with this client email already exists",
+  "deleteSuccess": "Lead deleted successfully",
+  "createSuccess": "Lead created successfully",
+  "updateSuccess": "Lead updated successfully"
+}
+
