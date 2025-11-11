@@ -95,7 +95,6 @@ export class OrganizationRepository {
         {
           name: {
             contains: filters.search,
-            mode: 'insensitive',
           },
         },
         {
@@ -103,7 +102,6 @@ export class OrganizationRepository {
             some: {
               name: {
                 contains: filters.search,
-                mode: 'insensitive',
               },
             },
           },
@@ -212,4 +210,3 @@ export class OrganizationRepository {
     return this.prisma.organization.count({ where });
   }
 }
-

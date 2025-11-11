@@ -109,10 +109,7 @@ export class AllowanceSettingsService {
     }
 
     // Check for conflicts in vacation settings
-    if (
-      updateDto.allowancesInVacations &&
-      updateDto.allowancesNotInVacations
-    ) {
+    if (updateDto.allowancesInVacations && updateDto.allowancesNotInVacations) {
       this.checkForConflicts(
         updateDto.allowancesInVacations,
         updateDto.allowancesNotInVacations,
@@ -136,10 +133,7 @@ export class AllowanceSettingsService {
     }
 
     // Check for conflicts in sick leave settings
-    if (
-      updateDto.allowancesInSickLeave &&
-      updateDto.allowancesNotInSickLeave
-    ) {
+    if (updateDto.allowancesInSickLeave && updateDto.allowancesNotInSickLeave) {
       this.checkForConflicts(
         updateDto.allowancesInSickLeave,
         updateDto.allowancesNotInSickLeave,
@@ -216,7 +210,10 @@ export class AllowanceSettingsService {
     if (!existingSettings) return; // No existing settings, no conflicts possible
 
     // Check vacation conflicts with existing data
-    if (updateDto.allowancesInVacations && !updateDto.allowancesNotInVacations) {
+    if (
+      updateDto.allowancesInVacations &&
+      !updateDto.allowancesNotInVacations
+    ) {
       this.checkForConflicts(
         updateDto.allowancesInVacations,
         existingSettings.allowancesNotInVacations,
@@ -224,7 +221,10 @@ export class AllowanceSettingsService {
       );
     }
 
-    if (updateDto.allowancesNotInVacations && !updateDto.allowancesInVacations) {
+    if (
+      updateDto.allowancesNotInVacations &&
+      !updateDto.allowancesInVacations
+    ) {
       this.checkForConflicts(
         updateDto.allowancesNotInVacations,
         existingSettings.allowancesInVacations,
@@ -233,7 +233,10 @@ export class AllowanceSettingsService {
     }
 
     // Check sick leave conflicts with existing data
-    if (updateDto.allowancesInSickLeave && !updateDto.allowancesNotInSickLeave) {
+    if (
+      updateDto.allowancesInSickLeave &&
+      !updateDto.allowancesNotInSickLeave
+    ) {
       this.checkForConflicts(
         updateDto.allowancesInSickLeave,
         existingSettings.allowancesNotInSickLeave,
@@ -241,7 +244,10 @@ export class AllowanceSettingsService {
       );
     }
 
-    if (updateDto.allowancesNotInSickLeave && !updateDto.allowancesInSickLeave) {
+    if (
+      updateDto.allowancesNotInSickLeave &&
+      !updateDto.allowancesInSickLeave
+    ) {
       this.checkForConflicts(
         updateDto.allowancesNotInSickLeave,
         existingSettings.allowancesInSickLeave,
@@ -283,9 +289,7 @@ export class AllowanceSettingsService {
     }
 
     if (updateDto.excludedEmployeeIds) {
-      cleaned.excludedEmployeeIds = [
-        ...new Set(updateDto.excludedEmployeeIds),
-      ];
+      cleaned.excludedEmployeeIds = [...new Set(updateDto.excludedEmployeeIds)];
     }
 
     return cleaned;
@@ -321,9 +325,7 @@ export class AllowanceSettingsService {
       allowancesNotInSickLeave: allowancesNotInSickLeave.map((a) =>
         this.mapAllowanceToDto(a),
       ),
-      excludedEmployees: excludedEmployees.map((e) =>
-        this.mapEmployeeToDto(e),
-      ),
+      excludedEmployees: excludedEmployees.map((e) => this.mapEmployeeToDto(e)),
       createdAt: settings.createdAt,
       updatedAt: settings.updatedAt,
     };
@@ -383,4 +385,3 @@ export class AllowanceSettingsService {
     };
   }
 }
-
