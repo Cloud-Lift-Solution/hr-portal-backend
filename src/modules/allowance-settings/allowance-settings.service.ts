@@ -42,11 +42,11 @@ export class AllowanceSettingsService {
       allowancesNotInSickLeave,
       excludedEmployees,
     ] = await Promise.all([
-      this.repository.getAllowancesByIds(settings.allowancesInVacations),
-      this.repository.getAllowancesByIds(settings.allowancesNotInVacations),
-      this.repository.getAllowancesByIds(settings.allowancesInSickLeave),
-      this.repository.getAllowancesByIds(settings.allowancesNotInSickLeave),
-      this.repository.getEmployeesByIds(settings.excludedEmployeeIds),
+      this.repository.getAllowancesByIds(settings.allowancesInVacations as string[]),
+      this.repository.getAllowancesByIds(settings.allowancesNotInVacations as string[]),
+      this.repository.getAllowancesByIds(settings.allowancesInSickLeave as string[]),
+      this.repository.getAllowancesByIds(settings.allowancesNotInSickLeave as string[]),
+      this.repository.getEmployeesByIds(settings.excludedEmployeeIds as string[]),
     ]);
 
     return this.mapToResponseDto(
@@ -216,7 +216,7 @@ export class AllowanceSettingsService {
     ) {
       this.checkForConflicts(
         updateDto.allowancesInVacations,
-        existingSettings.allowancesNotInVacations,
+        existingSettings.allowancesNotInVacations as string[],
         'allowanceSettings.conflictVacations',
       );
     }
@@ -227,7 +227,7 @@ export class AllowanceSettingsService {
     ) {
       this.checkForConflicts(
         updateDto.allowancesNotInVacations,
-        existingSettings.allowancesInVacations,
+        existingSettings.allowancesInVacations as string[],
         'allowanceSettings.conflictVacations',
       );
     }
@@ -239,7 +239,7 @@ export class AllowanceSettingsService {
     ) {
       this.checkForConflicts(
         updateDto.allowancesInSickLeave,
-        existingSettings.allowancesNotInSickLeave,
+        existingSettings.allowancesNotInSickLeave as string[],
         'allowanceSettings.conflictSickLeave',
       );
     }
@@ -250,7 +250,7 @@ export class AllowanceSettingsService {
     ) {
       this.checkForConflicts(
         updateDto.allowancesNotInSickLeave,
-        existingSettings.allowancesInSickLeave,
+        existingSettings.allowancesInSickLeave as string[],
         'allowanceSettings.conflictSickLeave',
       );
     }

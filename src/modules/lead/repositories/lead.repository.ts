@@ -140,9 +140,9 @@ export class LeadRepository {
     // Search by ID, lead name, or client name
     if (filters.search) {
       where.OR = [
-        { id: { contains: filters.search, mode: 'insensitive' } },
-        { leadName: { contains: filters.search, mode: 'insensitive' } },
-        { clientName: { contains: filters.search, mode: 'insensitive' } },
+        { id: { contains: filters.search } },
+        { leadName: { contains: filters.search } },
+        { clientName: { contains: filters.search } },
       ];
     }
 

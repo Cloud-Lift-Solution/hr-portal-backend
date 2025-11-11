@@ -35,7 +35,6 @@ export class AllowanceRepository {
       where: {
         name: {
           equals: name,
-          mode: 'insensitive',
         },
       },
     });
@@ -49,7 +48,6 @@ export class AllowanceRepository {
       where: {
         name: {
           equals: name,
-          mode: 'insensitive',
         },
         id: {
           not: excludeId,
@@ -99,7 +97,6 @@ export class AllowanceRepository {
     if (filters.search) {
       where.name = {
         contains: filters.search,
-        mode: 'insensitive',
       };
     }
 

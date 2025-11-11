@@ -119,7 +119,9 @@ export class ProjectRepository {
   /**
    * Find all projects with filters and pagination
    */
-  async findAllWithPagination(filters: ProjectFilters): Promise<PaginatedResult<any>> {
+  async findAllWithPagination(
+    filters: ProjectFilters,
+  ): Promise<PaginatedResult<any>> {
     const where = this.buildWhereClause(filters);
     const page = filters.page || 1;
     const limit = filters.limit || 20;
@@ -168,7 +170,6 @@ export class ProjectRepository {
     if (filters.search) {
       where.name = {
         contains: filters.search,
-        mode: 'insensitive',
       };
     }
 
@@ -207,7 +208,9 @@ export class ProjectRepository {
     if (month && month >= 1 && month <= 12) {
       // Filter by specific month and year
       const startDate = new Date(Date.UTC(currentYear, month - 1, 1, 0, 0, 0));
-      const endDate = new Date(Date.UTC(currentYear, month, 0, 23, 59, 59, 999));
+      const endDate = new Date(
+        Date.UTC(currentYear, month, 0, 23, 59, 59, 999),
+      );
 
       return {
         gte: startDate,
@@ -227,4 +230,3 @@ export class ProjectRepository {
     return undefined;
   }
 }
-

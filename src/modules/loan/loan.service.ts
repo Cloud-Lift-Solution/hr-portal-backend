@@ -84,7 +84,7 @@ export class LoanService {
     const remainingInstallments = loan.numberOfInstallments - newPaymentsMade;
 
     // Determine new status
-    let newStatus = loan.status;
+    let newStatus: LoanStatus = loan.status;
     if (loan.status === LoanStatus.NOT_STARTED) {
       newStatus = LoanStatus.ACTIVE;
     }

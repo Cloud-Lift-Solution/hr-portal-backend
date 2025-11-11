@@ -60,7 +60,6 @@ export class OrganizationRepository {
       where: {
         name: {
           equals: name,
-          mode: 'insensitive',
         },
         ...(excludeId ? { id: { not: excludeId } } : {}),
       },
