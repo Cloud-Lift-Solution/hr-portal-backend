@@ -21,6 +21,8 @@ import { OrganizationModule } from './modules/organization/organization.module';
 import { LeadModule } from './modules/lead/lead.module';
 import { ProjectModule } from './modules/project/project.module';
 import { ServerModule } from './modules/server/server.module';
+import { TicketCategoryModule } from './modules/ticket-category/ticket-category.module';
+import { SupportTicketModule } from './modules/support-ticket/support-ticket.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { ServerModule } from './modules/server/server.module';
     LeadModule,
     ProjectModule,
     ServerModule,
+    TicketCategoryModule,
+    SupportTicketModule,
   ],
   controllers: [],
   providers: [],
