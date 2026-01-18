@@ -8,7 +8,6 @@ import {
   appConfig,
 } from './config/app.config';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { Logger } from '@nestjs/common';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from './config/swagger.config';
@@ -31,9 +30,6 @@ async function bootstrap() {
 
   // IMPORTANT: Set up global pipes BEFORE filters
   app.useGlobalPipes(validationConfig);
-
-  // Set up global interceptors
-  app.useGlobalInterceptors(new ResponseInterceptor());
 
   // Set up global filters LAST (so it can catch everything)
   app.useGlobalFilters(new GlobalExceptionFilter());

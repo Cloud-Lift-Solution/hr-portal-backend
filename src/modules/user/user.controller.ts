@@ -15,7 +15,6 @@ import { UserProfileResponseDto } from './dto';
 // import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
-import { S3SignedUrlInterceptor } from '../../common/interceptors/s3-signed-url.interceptor';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('Users')
@@ -35,7 +34,6 @@ export class UserController {
    */
   @Get('profile')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(S3SignedUrlInterceptor)
   async getUserProfile(
     @CurrentUser() user: { id: string; email: string },
     @AcceptLanguage() language: string,
