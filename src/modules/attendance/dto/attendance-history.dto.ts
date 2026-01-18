@@ -72,5 +72,5 @@ export class AttendanceHistoryResponseDto {
   data: AttendanceHistoryItemDto[];
 
   @ApiProperty({ type: PaginationMetaDto })
-  meta: PaginationMetaDto;
+  pagination: PaginationMetaDto;
 }

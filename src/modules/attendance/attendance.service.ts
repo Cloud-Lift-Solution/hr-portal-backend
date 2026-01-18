@@ -248,8 +248,13 @@ export class AttendanceService {
     // Map to DTOs
     const data = attendances.map((attendance) => this.mapToHistoryItemDto(attendance));
 
-    // Create paginated result
-    return PaginationUtil.createPaginatedResult(data, normalizedPage, normalizedLimit, total);
+    // Create pagination metadata
+    const pagination = PaginationUtil.createMeta(normalizedPage, normalizedLimit, total);
+
+    return {
+      data,
+      pagination,
+    };
   }
 
   // Helper methods
