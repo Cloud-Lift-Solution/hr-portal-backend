@@ -29,7 +29,7 @@ export class UserController {
   /**
    * Get current user profile with localized content
    * S3 file keys (cvFileKey, portfolioFileKey) are automatically transformed to signed URLs
-   * 
+   *
    * ⚠️ NOTE: This endpoint uses @CurrentUser() which requires JWT authentication.
    * It may not work properly with auth disabled.
    */
@@ -45,7 +45,7 @@ export class UserController {
 
   /**
    * Update current user profile
-   * 
+   *
    * ⚠️ NOTE: This endpoint uses @CurrentUser() which requires JWT authentication.
    * It may not work properly with auth disabled.
    */
