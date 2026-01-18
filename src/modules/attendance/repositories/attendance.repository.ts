@@ -157,4 +157,31 @@ export class AttendanceRepository {
       },
     });
   }
+
+  /**
+   * Find all attendance records for an employee with pagination
+   */
+  async findAllByEmployee(employeeId: string, skip: number, take: number) {
+    return this.prisma.attendance.findMany({
+      where: {
+        employeeId,
+      },
+      orderBy: {
+        date: 'desc',
+      },
+      skip,
+      take,
+    });
+  }
+
+  /**
+   * Count total attendance records for an employee
+   */
+  async countByEmployee(employeeId: string): Promise<number> {
+    return this.prisma.attendance.count({
+      where: {
+        employeeId,
+      },
+    });
+  }
 }

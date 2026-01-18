@@ -12,7 +12,10 @@ import {
   TodayStatusResponseDto,
   AttendanceStatusDto,
   ActiveBreakDto,
+  AttendanceHistoryResponseDto,
+  AttendanceHistoryItemDto,
 } from './dto';
+import { PaginationUtil } from '../../common/utils/pagination.util';
 
 @Injectable()
 export class AttendanceService {
@@ -219,6 +222,36 @@ export class AttendanceService {
     };
   }
 
+  /**
+   * Get Attendance History: View all attendance records with pagination
+   */
+  async getAttendanceHistory(
+    employeeId: string,
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<AttendanceHistoryResponseDto> {
+    await this.ensureEmployeeActive(employeeId);
+
+    // Normalize pagination params
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+
+    // Calculate skip
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Fetch data and count in parallel
+    const [attendances, total] = await Promise.all([
+      this.attendanceRepository.findAllByEmployee(employeeId, skip, normalizedLimit),
+      this.attendanceRepository.countByEmployee(employeeId),
+    ]);
+
+    // Map to DTOs
+    const data = attendances.map((attendance) => this.mapToHistoryItemDto(attendance));
+
+    // Create paginated result
+    return PaginationUtil.createPaginatedResult(data, normalizedPage, normalizedLimit, total);
+  }
+
   // Helper methods
 
   private async ensureEmployeeActive(employeeId: string): Promise<void> {
@@ -362,6 +395,38 @@ export class AttendanceService {
       id: breakRecord.id,
       breakStart: breakRecord.breakStart,
       currentBreakMinutes: this.calculateBreakDuration(breakRecord.breakStart),
+    };
+  }
+
+  private mapToHistoryItemDto(attendance: any): AttendanceHistoryItemDto {
+    return {
+      id: attendance.id,
+      date: attendance.date,
+      clockInTime: attendance.clockInTime,
+      clockOutTime: attendance.clockOutTime || null,
+      totalHours: attendance.totalHours ? parseFloat(attendance.totalHours.toString()) : null,
+      totalBreakMinutes: attendance.totalBreakMinutes,
+      status: attendance.status,
+      clockInLatitude: attendance.clockInLatitude
+        ? parseFloat(attendance.clockInLatitude.toString())
+        : undefined,
+      clockInLongitude: attendance.clockInLongitude
+        ? parseFloat(attendance.clockInLongitude.toString())
+        : undefined,
+      clockInAccuracy: attendance.clockInAccuracy
+        ? parseFloat(attendance.clockInAccuracy.toString())
+        : undefined,
+      clockInAddress: attendance.clockInAddress || undefined,
+      clockOutLatitude: attendance.clockOutLatitude
+        ? parseFloat(attendance.clockOutLatitude.toString())
+        : undefined,
+      clockOutLongitude: attendance.clockOutLongitude
+        ? parseFloat(attendance.clockOutLongitude.toString())
+        : undefined,
+      clockOutAccuracy: attendance.clockOutAccuracy
+        ? parseFloat(attendance.clockOutAccuracy.toString())
+        : undefined,
+      clockOutAddress: attendance.clockOutAddress || undefined,
     };
   }
 }

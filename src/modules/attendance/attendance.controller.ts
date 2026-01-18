@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Body,
+  Query,
   HttpCode,
   HttpStatus,
   UseInterceptors,
@@ -18,10 +19,12 @@ import {
   BreakResponseDto,
   ClockOutResponseDto,
   TodayStatusResponseDto,
+  AttendanceHistoryResponseDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 
 @ApiTags('Attendance')
 @ApiBearerAuth('JWT-auth')
@@ -106,5 +109,25 @@ export class AttendanceController {
     @AcceptLanguage() lang: string,
   ): Promise<TodayStatusResponseDto> {
     return await this.attendanceService.getTodayStatus(user.id, lang);
+  }
+
+  /**
+   * Get attendance history
+   * GET /attendance/history
+   * Requires JWT authentication - employee ID extracted from token
+   * Returns paginated list of all attendance records
+   */
+  @Get('history')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get attendance history with pagination' })
+  async getAttendanceHistory(
+    @CurrentUser() user: { id: string; email: string },
+    @Query() query: PaginationQueryDto,
+  ): Promise<AttendanceHistoryResponseDto> {
+    return await this.attendanceService.getAttendanceHistory(
+      user.id,
+      query.page,
+      query.limit,
+    );
   }
 }
