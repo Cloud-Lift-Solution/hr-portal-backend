@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ClockOutResponseDto {
   @ApiProperty()
@@ -24,4 +24,28 @@ export class ClockOutResponseDto {
 
   @ApiProperty()
   status: string;
+
+  @ApiPropertyOptional()
+  clockInLatitude?: number;
+
+  @ApiPropertyOptional()
+  clockInLongitude?: number;
+
+  @ApiPropertyOptional()
+  clockInAccuracy?: number;
+
+  @ApiPropertyOptional()
+  clockInAddress?: string;
+
+  @ApiPropertyOptional()
+  clockOutLatitude?: number;
+
+  @ApiPropertyOptional()
+  clockOutLongitude?: number;
+
+  @ApiPropertyOptional()
+  clockOutAccuracy?: number;
+
+  @ApiPropertyOptional()
+  clockOutAddress?: string;
 }

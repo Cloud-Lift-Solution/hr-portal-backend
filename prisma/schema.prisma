@@ -268,6 +268,18 @@ model Attendance {
 
   status AttendanceStatus @default(CLOCKED_IN)
 
+  // Clock-in location data
+  clockInLatitude  Decimal? @db.Decimal(10, 8)
+  clockInLongitude Decimal? @db.Decimal(11, 8)
+  clockInAccuracy  Decimal? @db.Decimal(6, 2) // GPS accuracy in meters
+  clockInAddress   String?  // Reverse geocoded address
+
+  // Clock-out location data
+  clockOutLatitude  Decimal? @db.Decimal(10, 8)
+  clockOutLongitude Decimal? @db.Decimal(11, 8)
+  clockOutAccuracy  Decimal? @db.Decimal(6, 2)
+  clockOutAddress   String?
+
   breaks AttendanceBreak[]
 
   createdAt DateTime @default(now())

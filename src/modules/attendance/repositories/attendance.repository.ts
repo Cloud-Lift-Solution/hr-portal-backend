@@ -32,7 +32,17 @@ export class AttendanceRepository {
   /**
    * Create new attendance record with CLOCKED_IN status
    */
-  async createAttendance(employeeId: string, clockInTime: Date, date: Date) {
+  async createAttendance(
+    employeeId: string,
+    clockInTime: Date,
+    date: Date,
+    locationData?: {
+      latitude?: number;
+      longitude?: number;
+      accuracy?: number;
+      address?: string;
+    },
+  ) {
     return this.prisma.attendance.create({
       data: {
         employeeId,
@@ -40,6 +50,16 @@ export class AttendanceRepository {
         date,
         status: AttendanceStatus.CLOCKED_IN,
         totalBreakMinutes: 0,
+        clockInLatitude: locationData?.latitude
+          ? new Decimal(locationData.latitude)
+          : undefined,
+        clockInLongitude: locationData?.longitude
+          ? new Decimal(locationData.longitude)
+          : undefined,
+        clockInAccuracy: locationData?.accuracy
+          ? new Decimal(locationData.accuracy)
+          : undefined,
+        clockInAddress: locationData?.address,
       },
     });
   }
@@ -61,6 +81,12 @@ export class AttendanceRepository {
     attendanceId: string,
     clockOutTime: Date,
     totalHours: Decimal,
+    locationData?: {
+      latitude?: number;
+      longitude?: number;
+      accuracy?: number;
+      address?: string;
+    },
   ) {
     return this.prisma.attendance.update({
       where: { id: attendanceId },
@@ -68,6 +94,16 @@ export class AttendanceRepository {
         clockOutTime,
         totalHours,
         status: AttendanceStatus.CLOCKED_OUT,
+        clockOutLatitude: locationData?.latitude
+          ? new Decimal(locationData.latitude)
+          : undefined,
+        clockOutLongitude: locationData?.longitude
+          ? new Decimal(locationData.longitude)
+          : undefined,
+        clockOutAccuracy: locationData?.accuracy
+          ? new Decimal(locationData.accuracy)
+          : undefined,
+        clockOutAddress: locationData?.address,
       },
     });
   }

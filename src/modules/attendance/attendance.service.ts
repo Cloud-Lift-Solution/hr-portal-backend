@@ -25,7 +25,16 @@ export class AttendanceService {
   /**
    * Clock In: Start work day
    */
-  async clockIn(employeeId: string, lang: string): Promise<ClockInResponseDto> {
+  async clockIn(
+    employeeId: string,
+    lang: string,
+    locationData?: {
+      latitude?: number;
+      longitude?: number;
+      accuracy?: number;
+      address?: string;
+    },
+  ): Promise<ClockInResponseDto> {
     await this.ensureEmployeeActive(employeeId);
 
     const today = this.toStartOfDay(new Date());
@@ -42,6 +51,7 @@ export class AttendanceService {
       employeeId,
       clockInTime,
       today,
+      locationData,
     );
 
     return this.mapToClockInResponse(attendance);
@@ -135,7 +145,16 @@ export class AttendanceService {
   /**
    * Clock Out: End work day
    */
-  async clockOut(employeeId: string, lang: string): Promise<ClockOutResponseDto> {
+  async clockOut(
+    employeeId: string,
+    lang: string,
+    locationData?: {
+      latitude?: number;
+      longitude?: number;
+      accuracy?: number;
+      address?: string;
+    },
+  ): Promise<ClockOutResponseDto> {
     await this.ensureEmployeeActive(employeeId);
 
     const today = this.toStartOfDay(new Date());
@@ -170,6 +189,7 @@ export class AttendanceService {
       attendance.id,
       clockOutTime,
       new Decimal(totalHours),
+      locationData,
     );
 
     return this.mapToClockOutResponse(updatedAttendance);
@@ -253,6 +273,16 @@ export class AttendanceService {
         attendance.clockInTime,
         attendance.totalBreakMinutes,
       ),
+      clockInLatitude: attendance.clockInLatitude
+        ? parseFloat(attendance.clockInLatitude.toString())
+        : undefined,
+      clockInLongitude: attendance.clockInLongitude
+        ? parseFloat(attendance.clockInLongitude.toString())
+        : undefined,
+      clockInAccuracy: attendance.clockInAccuracy
+        ? parseFloat(attendance.clockInAccuracy.toString())
+        : undefined,
+      clockInAddress: attendance.clockInAddress || undefined,
     };
   }
 
@@ -266,6 +296,26 @@ export class AttendanceService {
       totalBreakMinutes: attendance.totalBreakMinutes,
       totalHours: attendance.totalHours ? parseFloat(attendance.totalHours.toString()) : 0,
       status: attendance.status,
+      clockInLatitude: attendance.clockInLatitude
+        ? parseFloat(attendance.clockInLatitude.toString())
+        : undefined,
+      clockInLongitude: attendance.clockInLongitude
+        ? parseFloat(attendance.clockInLongitude.toString())
+        : undefined,
+      clockInAccuracy: attendance.clockInAccuracy
+        ? parseFloat(attendance.clockInAccuracy.toString())
+        : undefined,
+      clockInAddress: attendance.clockInAddress || undefined,
+      clockOutLatitude: attendance.clockOutLatitude
+        ? parseFloat(attendance.clockOutLatitude.toString())
+        : undefined,
+      clockOutLongitude: attendance.clockOutLongitude
+        ? parseFloat(attendance.clockOutLongitude.toString())
+        : undefined,
+      clockOutAccuracy: attendance.clockOutAccuracy
+        ? parseFloat(attendance.clockOutAccuracy.toString())
+        : undefined,
+      clockOutAddress: attendance.clockOutAddress || undefined,
     };
   }
 
@@ -284,6 +334,26 @@ export class AttendanceService {
       totalHours: attendance.totalHours ? parseFloat(attendance.totalHours.toString()) : null,
       currentWorkingHours,
       status: attendance.status,
+      clockInLatitude: attendance.clockInLatitude
+        ? parseFloat(attendance.clockInLatitude.toString())
+        : undefined,
+      clockInLongitude: attendance.clockInLongitude
+        ? parseFloat(attendance.clockInLongitude.toString())
+        : undefined,
+      clockInAccuracy: attendance.clockInAccuracy
+        ? parseFloat(attendance.clockInAccuracy.toString())
+        : undefined,
+      clockInAddress: attendance.clockInAddress || undefined,
+      clockOutLatitude: attendance.clockOutLatitude
+        ? parseFloat(attendance.clockOutLatitude.toString())
+        : undefined,
+      clockOutLongitude: attendance.clockOutLongitude
+        ? parseFloat(attendance.clockOutLongitude.toString())
+        : undefined,
+      clockOutAccuracy: attendance.clockOutAccuracy
+        ? parseFloat(attendance.clockOutAccuracy.toString())
+        : undefined,
+      clockOutAddress: attendance.clockOutAddress || undefined,
     };
   }
 

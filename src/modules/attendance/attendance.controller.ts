@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Body,
   HttpCode,
   HttpStatus,
   UseInterceptors,
@@ -11,7 +12,9 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AttendanceService } from './attendance.service';
 import {
+  ClockInRequestDto,
   ClockInResponseDto,
+  ClockOutRequestDto,
   BreakResponseDto,
   ClockOutResponseDto,
   TodayStatusResponseDto,
@@ -39,8 +42,9 @@ export class AttendanceController {
   async clockIn(
     @CurrentUser() user: { id: string; email: string },
     @AcceptLanguage() lang: string,
+    @Body() body: ClockInRequestDto,
   ): Promise<ClockInResponseDto> {
-    return await this.attendanceService.clockIn(user.id, lang);
+    return await this.attendanceService.clockIn(user.id, lang, body);
   }
 
   /**
@@ -84,8 +88,9 @@ export class AttendanceController {
   async clockOut(
     @CurrentUser() user: { id: string; email: string },
     @AcceptLanguage() lang: string,
+    @Body() body: ClockOutRequestDto,
   ): Promise<ClockOutResponseDto> {
-    return await this.attendanceService.clockOut(user.id, lang);
+    return await this.attendanceService.clockOut(user.id, lang, body);
   }
 
   /**

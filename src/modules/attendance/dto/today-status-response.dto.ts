@@ -24,6 +24,30 @@ export class AttendanceStatusDto {
 
   @ApiProperty()
   status: string;
+
+  @ApiPropertyOptional()
+  clockInLatitude?: number;
+
+  @ApiPropertyOptional()
+  clockInLongitude?: number;
+
+  @ApiPropertyOptional()
+  clockInAccuracy?: number;
+
+  @ApiPropertyOptional()
+  clockInAddress?: string;
+
+  @ApiPropertyOptional()
+  clockOutLatitude?: number;
+
+  @ApiPropertyOptional()
+  clockOutLongitude?: number;
+
+  @ApiPropertyOptional()
+  clockOutAccuracy?: number;
+
+  @ApiPropertyOptional()
+  clockOutAddress?: string;
 }
 
 export class ActiveBreakDto {
