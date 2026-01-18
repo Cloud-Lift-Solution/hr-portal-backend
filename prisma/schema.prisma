@@ -454,6 +454,9 @@ model Project {
   departmentId String?
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
 
+  // Relations
+  servers Server[]
+
   // Client information
   clientName    String
   clientPhone   String
@@ -486,5 +489,30 @@ model Project {
   @@index([name])
   @@index([departmentId])
   @@index([contractDate])
+  @@index([createdAt])
+}
+
+// ============= SERVER MODEL =============
+
+model Server {
+  id         String  @id @default(uuid())
+  projectId  String
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  contractNo String
+  price      Decimal @db.Decimal(12, 2)
+  packageNum String
+  
+  startDate DateTime
+  endDate   DateTime
+  
+  attachmentUrl String? @db.Text
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([projectId])
+  @@index([startDate])
+  @@index([endDate])
   @@index([createdAt])
 }

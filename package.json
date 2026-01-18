@@ -31,7 +31,8 @@
     "seed:work-job-data": "ts-node prisma/seeds/seed-work-field-job-titles.ts",
     "seed:cultural": "ts-node prisma/seeds/seed-cultural-backgrounds.ts",
     "seed:subscriptions": "ts-node prisma/seeds/seed-subscription-plans.ts",
-    "seed:addons": "ts-node prisma/seeds/addons.seed.ts"
+    "seed:addons": "ts-node prisma/seeds/addons.seed.ts",
+    "seed:employee": "ts-node prisma/seeds/seed-employee.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.901.0",

@@ -20,6 +20,7 @@ import { AllowanceSettingsModule } from './modules/allowance-settings/allowance-
 import { OrganizationModule } from './modules/organization/organization.module';
 import { LeadModule } from './modules/lead/lead.module';
 import { ProjectModule } from './modules/project/project.module';
+import { ServerModule } from './modules/server/server.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ProjectModule } from './modules/project/project.module';
     OrganizationModule,
     LeadModule,
     ProjectModule,
+    ServerModule,
   ],
   controllers: [],
   providers: [],

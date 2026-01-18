@@ -1,0 +1,25 @@
+{
+  "createSuccess": "Server created successfully",
+  "updateSuccess": "Server updated successfully",
+  "deleteSuccess": "Server deleted successfully",
+  "notFound": "Server not found",
+  "projectIdInvalid": "Invalid project ID format",
+  "projectNotFound": "Project not found",
+  "contractNoRequired": "Contract number is required",
+  "contractNoTooShort": "Contract number must be at least 2 characters",
+  "contractNoTooLong": "Contract number cannot exceed 50 characters",
+  "priceRequired": "Price is required",
+  "pricePositive": "Price must be greater than 0",
+  "priceInvalid": "Invalid price value",
+  "priceTooLarge": "Price exceeds maximum allowed value",
+  "packageNumRequired": "Package number is required",
+  "packageNumTooLong": "Package number cannot exceed 50 characters",
+  "startDateRequired": "Start date is required",
+  "startDateInvalid": "Invalid start date format",
+  "endDateRequired": "End date is required",
+  "endDateInvalid": "Invalid end date format",
+  "endDateBeforeStart": "End date must be after start date",
+  "attachmentUrlInvalid": "Invalid attachment URL format",
+  "attachmentUrlTooLong": "Attachment URL exceeds maximum length"
+}
+

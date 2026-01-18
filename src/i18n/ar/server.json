@@ -1,0 +1,25 @@
+{
+  "createSuccess": "تم إنشاء الخادم بنجاح",
+  "updateSuccess": "تم تحديث الخادم بنجاح",
+  "deleteSuccess": "تم حذف الخادم بنجاح",
+  "notFound": "الخادم غير موجود",
+  "projectIdInvalid": "صيغة معرف المشروع غير صالحة",
+  "projectNotFound": "المشروع غير موجود",
+  "contractNoRequired": "رقم العقد مطلوب",
+  "contractNoTooShort": "رقم العقد يجب أن يكون على الأقل حرفين",
+  "contractNoTooLong": "رقم العقد لا يمكن أن يتجاوز 50 حرفاً",
+  "priceRequired": "السعر مطلوب",
+  "pricePositive": "السعر يجب أن يكون أكبر من 0",
+  "priceInvalid": "قيمة السعر غير صالحة",
+  "priceTooLarge": "السعر يتجاوز الحد الأقصى المسموح به",
+  "packageNumRequired": "رقم الباقة مطلوب",
+  "packageNumTooLong": "رقم الباقة لا يمكن أن يتجاوز 50 حرفاً",
+  "startDateRequired": "تاريخ البدء مطلوب",
+  "startDateInvalid": "صيغة تاريخ البدء غير صالحة",
+  "endDateRequired": "تاريخ الانتهاء مطلوب",
+  "endDateInvalid": "صيغة تاريخ الانتهاء غير صالحة",
+  "endDateBeforeStart": "تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء",
+  "attachmentUrlInvalid": "صيغة رابط المرفق غير صالحة",
+  "attachmentUrlTooLong": "رابط المرفق يتجاوز الحد الأقصى للطول"
+}
+
