@@ -32,7 +32,8 @@
     "seed:cultural": "ts-node prisma/seeds/seed-cultural-backgrounds.ts",
     "seed:subscriptions": "ts-node prisma/seeds/seed-subscription-plans.ts",
     "seed:addons": "ts-node prisma/seeds/addons.seed.ts",
-    "seed:employee": "ts-node prisma/seeds/seed-employee.ts"
+    "seed:employee": "ts-node prisma/seeds/seed-employee.ts",
+    "seed:support:tickets": "ts-node prisma/seeds/seed-support-tickets.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
