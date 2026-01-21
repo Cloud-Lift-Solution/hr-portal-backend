@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { LoanController } from './loan.controller';
+import { LoanEmployeeController } from './loan-employee.controller';
 import { LoanService } from './loan.service';
 import { LoanRepository } from './repositories/loan.repository';
 import { PrismaModule } from '../../prisma/prisma.module';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [LoanController],
+  controllers: [LoanController, LoanEmployeeController],
   providers: [LoanService, LoanRepository],
   exports: [LoanService],
 })

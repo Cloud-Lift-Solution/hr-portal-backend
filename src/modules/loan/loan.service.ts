@@ -9,6 +9,13 @@ import {
   LoanListResponseDto,
   LoanQueryDto,
   MyLoansQueryDto,
+  EmployeeLoanRequestDto,
+  ApproveLoanDto,
+  ActiveLoansResponseDto,
+  ActiveLoanDto,
+  UpcomingPaymentDto,
+  LoanHistoryResponseDto,
+  LoanHistoryItemDto,
 } from './dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
 
@@ -47,6 +54,7 @@ export class LoanService {
     const loan = await this.loanRepository.create({
       employeeId: createLoanDto.employeeId,
       loanAmount: createLoanDto.loanAmount,
+      purpose: 'Admin created loan', // Default purpose for admin-created loans
       type: createLoanDto.type,
       numberOfInstallments: createLoanDto.numberOfInstallments,
       numberOfPaymentsMade: 0,
@@ -58,6 +66,62 @@ export class LoanService {
     });
 
     return this.mapToResponseDto(loan);
+  }
+
+  /**
+   * Employee loan request
+   */
+  async employeeRequestLoan(
+    employeeId: string,
+    dto: EmployeeLoanRequestDto,
+    lang: string,
+  ): Promise<LoanResponseDto> {
+    // Validate employee exists and is active
+    await this.ensureEmployeeActive(employeeId);
+
+    // Use current date if paymentStartDate is not provided
+    const paymentStartDate = dto.paymentStartDate
+      ? new Date(dto.paymentStartDate)
+      : new Date();
+
+    // Create loan request with PENDING status
+    const loan = await this.loanRepository.createEmployeeRequest({
+      employeeId,
+      loanAmount: dto.loanAmount,
+      purpose: dto.purpose,
+      numberOfInstallments: dto.numberOfInstallments,
+      paymentStartDate,
+    });
+
+    return this.mapToResponseDto(loan);
+  }
+
+  /**
+   * Approve loan and create installments
+   */
+  async approveLoan(
+    id: string,
+    dto: ApproveLoanDto,
+    lang: string,
+  ): Promise<LoanResponseDto> {
+    const loan = await this.loanRepository.findById(id);
+
+    if (!loan) {
+      throw TranslatedException.notFound('loan.notFound');
+    }
+
+    if (loan.status !== LoanStatus.PENDING) {
+      throw TranslatedException.badRequest('loan.notPending');
+    }
+
+    // Approve and create installments
+    const approvedLoan = await this.loanRepository.approveLoan(id, dto.note);
+
+    if (!approvedLoan) {
+      throw TranslatedException.notFound('loan.notFound');
+    }
+
+    return this.mapToResponseDto(approvedLoan);
   }
 
   /**
@@ -183,6 +247,83 @@ export class LoanService {
     };
   }
 
+  /**
+   * Get active loans with upcoming payments for employee
+   */
+  async getActiveLoans(employeeId: string): Promise<ActiveLoansResponseDto> {
+    const loans =
+      await this.loanRepository.findActiveLoansWithInstallments(employeeId);
+
+    const activeLoans: ActiveLoanDto[] = loans.map((loan) => {
+      const totalAmount = parseFloat(loan.loanAmount.toString());
+      const monthlyPayment = this.calculateInstallmentAmount(
+        totalAmount,
+        loan.numberOfInstallments,
+      );
+      const paidAmount = loan.numberOfPaymentsMade * monthlyPayment;
+      const remainingBalance = totalAmount - paidAmount;
+
+      // Map upcoming payments from installments
+      const upcomingPayments: UpcomingPaymentDto[] = (loan.installments || []).map(
+        (installment: any) => ({
+          id: installment.id,
+          amount: parseFloat(installment.amount.toString()),
+          dueDate: `${installment.dueYear}-${String(installment.dueMonth).padStart(2, '0')}-01`,
+          dueMonth: installment.dueMonth,
+          dueYear: installment.dueYear,
+        }),
+      );
+
+      return {
+        id: loan.id,
+        purpose: loan.purpose,
+        status: loan.status,
+        startedDate: loan.paymentStartDate,
+        totalAmount,
+        remainingBalance: Math.round(remainingBalance * 100) / 100,
+        monthlyPayment,
+        upcomingPayments,
+      };
+    });
+
+    return { activeLoans };
+  }
+
+  /**
+   * Get loan history (completed loans) for employee
+   */
+  async getLoanHistory(
+    employeeId: string,
+    query: MyLoansQueryDto,
+  ): Promise<LoanHistoryResponseDto> {
+    const { data, total } = await this.loanRepository.findCompletedLoans(
+      employeeId,
+      {
+        page: query.page || 1,
+        limit: query.limit || 20,
+      },
+    );
+
+    const historyItems: LoanHistoryItemDto[] = data.map((loan) => ({
+      id: loan.id,
+      purpose: loan.purpose,
+      status: 'PAID',
+      startedDate: loan.paymentStartDate,
+      totalPaid: parseFloat(loan.loanAmount.toString()),
+      installmentMonths: loan.numberOfInstallments,
+    }));
+
+    return {
+      data: historyItems,
+      pagination: {
+        page: query.page || 1,
+        limit: query.limit || 20,
+        total,
+        totalPages: Math.ceil(total / (query.limit || 20)),
+      },
+    };
+  }
+
   // ==================== HELPER METHODS ====================
 
   private async ensureEmployeeActive(employeeId: string): Promise<void> {
@@ -277,6 +418,7 @@ export class LoanService {
           }
         : undefined,
       loanAmount,
+      purpose: loan.purpose,
       type: loan.type,
       numberOfInstallments: loan.numberOfInstallments,
       numberOfPaymentsMade: loan.numberOfPaymentsMade,

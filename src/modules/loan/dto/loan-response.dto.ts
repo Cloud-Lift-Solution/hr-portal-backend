@@ -15,6 +15,7 @@ export class LoanResponseDto {
   employeeId: string;
   employee?: LoanEmployeeInfoDto;
   loanAmount: number;
+  purpose: string;
   type: LoanType;
   numberOfInstallments: number;
   numberOfPaymentsMade: number;

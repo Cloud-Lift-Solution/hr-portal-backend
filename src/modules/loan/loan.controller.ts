@@ -9,7 +9,6 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
-  Request,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { LoanService } from './loan.service';
@@ -19,25 +18,23 @@ import {
   PaymentResponseDto,
   LoanListResponseDto,
   LoanQueryDto,
-  MyLoansQueryDto,
+  ApproveLoanDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
 
-@ApiTags('Loans')
-// @ApiBearerAuth('JWT-auth') // Uncomment when auth is ready
-@Controller('loans')
+@ApiTags('Admin Loans')
+@Controller('admin/loans')
 @UseInterceptors(ClassSerializerInterceptor)
-// @UseGuards(JwtAuthGuard) // Uncomment when auth is ready
 export class LoanController {
   constructor(private readonly loanService: LoanService) {}
 
   /**
-   * Create new loan
-   * POST /loans
+   * Create new loan (admin creates loan for employee)
+   * POST /admin/loans
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create new loan' })
+  @ApiOperation({ summary: 'Create new loan for employee' })
   async create(
     @Body() createLoanDto: CreateLoanDto,
     @AcceptLanguage() language: string,
@@ -46,8 +43,23 @@ export class LoanController {
   }
 
   /**
+   * Approve loan and create installments
+   * POST /admin/loans/:id/approve
+   */
+  @Post(':id/approve')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Approve loan and create installments' })
+  async approveLoan(
+    @Param('id') id: string,
+    @Body() dto: ApproveLoanDto,
+    @AcceptLanguage() language: string,
+  ): Promise<LoanResponseDto> {
+    return await this.loanService.approveLoan(id, dto, language);
+  }
+
+  /**
    * Record payment for a loan
-   * POST /loans/:id/pay
+   * POST /admin/loans/:id/pay
    */
   @Post(':id/pay')
   @HttpCode(HttpStatus.OK)
@@ -61,7 +73,7 @@ export class LoanController {
 
   /**
    * Get all loans with filters
-   * GET /loans
+   * GET /admin/loans
    */
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -71,23 +83,8 @@ export class LoanController {
   }
 
   /**
-   * Get my loans (for logged-in employee)
-   * GET /loans/my-loans
-   */
-  @Get('my-loans')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get my loans' })
-  async getMyLoans(
-    @Request() req: any,
-    @Query() query: MyLoansQueryDto,
-  ): Promise<LoanListResponseDto> {
-    const employeeId = req.user?.id || 'test-employee-id'; // TODO: Get from JWT
-    return await this.loanService.getMyLoans(employeeId, query);
-  }
-
-  /**
    * Get single loan by ID
-   * GET /loans/:id
+   * GET /admin/loans/:id
    */
   @Get(':id')
   @HttpCode(HttpStatus.OK)

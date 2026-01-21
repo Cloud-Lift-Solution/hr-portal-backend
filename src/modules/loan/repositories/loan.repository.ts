@@ -38,6 +38,7 @@ export class LoanRepository {
   async create(data: {
     employeeId: string;
     loanAmount: number;
+    purpose: string;
     type: LoanType;
     numberOfInstallments: number;
     numberOfPaymentsMade: number;
@@ -161,5 +162,159 @@ export class LoanRepository {
       },
     });
     return count > 0;
+  }
+
+  /**
+   * Create employee loan request
+   */
+  async createEmployeeRequest(data: {
+    employeeId: string;
+    loanAmount: number;
+    purpose: string;
+    numberOfInstallments: number;
+    paymentStartDate: Date;
+  }) {
+    return this.prisma.loan.create({
+      data: {
+        employeeId: data.employeeId,
+        loanAmount: data.loanAmount,
+        purpose: data.purpose,
+        type: LoanType.ADD_TO_PAYROLL,
+        numberOfInstallments: data.numberOfInstallments,
+        numberOfPaymentsMade: 0,
+        paymentStartDate: data.paymentStartDate,
+        status: LoanStatus.PENDING,
+      },
+      include: this.includeRelations,
+    });
+  }
+
+  /**
+   * Approve loan and create installments
+   */
+  async approveLoan(loanId: string, note?: string) {
+    const loan = await this.prisma.loan.findUnique({
+      where: { id: loanId },
+    });
+
+    if (!loan) {
+      return null;
+    }
+
+    // Calculate installment details
+    const installmentAmount = loan.loanAmount.toNumber() / loan.numberOfInstallments;
+    const startDate = new Date(loan.paymentStartDate);
+    const installments = [];
+
+    for (let i = 0; i < loan.numberOfInstallments; i++) {
+      const dueDate = new Date(startDate);
+      dueDate.setMonth(dueDate.getMonth() + i);
+
+      installments.push({
+        loanId: loan.id,
+        installmentNumber: i + 1,
+        amount: installmentAmount,
+        dueMonth: dueDate.getMonth() + 1, // 1-12
+        dueYear: dueDate.getFullYear(),
+      });
+    }
+
+    // Update loan and create installments in a transaction
+    return this.prisma.$transaction(async (tx) => {
+      // Create all installments
+      await tx.loanInstallment.createMany({
+        data: installments,
+      });
+
+      // Update loan status to ACTIVE
+      return tx.loan.update({
+        where: { id: loanId },
+        data: {
+          status: LoanStatus.ACTIVE,
+          month: startDate.getMonth() + 1,
+          year: startDate.getFullYear(),
+          note,
+        },
+        include: {
+          ...this.includeRelations,
+          installments: {
+            orderBy: {
+              installmentNumber: 'asc',
+            },
+          },
+        },
+      });
+    });
+  }
+
+  /**
+   * Find loan by ID with installments
+   */
+  async findByIdWithInstallments(id: string) {
+    return this.prisma.loan.findUnique({
+      where: { id },
+      include: {
+        ...this.includeRelations,
+        installments: {
+          orderBy: {
+            installmentNumber: 'asc',
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * Find active loans for employee with unpaid installments
+   */
+  async findActiveLoansWithInstallments(employeeId: string) {
+    return this.prisma.loan.findMany({
+      where: {
+        employeeId,
+        status: {
+          in: [LoanStatus.ACTIVE, LoanStatus.NOT_STARTED],
+        },
+      },
+      include: {
+        installments: {
+          where: {
+            status: 'PENDING',
+          },
+          orderBy: [
+            { dueYear: 'asc' },
+            { dueMonth: 'asc' },
+          ],
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  /**
+   * Find completed loans for employee with pagination
+   */
+  async findCompletedLoans(
+    employeeId: string,
+    filters: {
+      page: number;
+      limit: number;
+    },
+  ) {
+    const where: Prisma.LoanWhereInput = {
+      employeeId,
+      status: LoanStatus.COMPLETED,
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.loan.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (filters.page - 1) * filters.limit,
+        take: filters.limit,
+      }),
+      this.prisma.loan.count({ where }),
+    ]);
+
+    return { data, total };
   }
 }
