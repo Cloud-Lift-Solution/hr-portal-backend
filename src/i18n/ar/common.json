@@ -1,0 +1,20 @@
+{
+  "success": {
+    "default": "تمت العملية بنجاح",
+    "created": "تم الإنشاء بنجاح",
+    "updated": "تم التحديث بنجاح",
+    "deleted": "تم الحذف بنجاح",
+    "fetched": "تم استرجاع البيانات بنجاح",
+    "login": "تم تسجيل الدخول بنجاح",
+    "logout": "تم تسجيل الخروج بنجاح"
+  },
+  "errors": {
+    "badRequest": "طلب غير صالح",
+    "unauthorized": "غير مصرح",
+    "forbidden": "تم رفض الوصول",
+    "notFound": "غير موجود",
+    "conflict": "تعارض",
+    "internalServerError": "خطأ في الخادم",
+    "validationFailed": "فشل التحقق"
+  }
+}

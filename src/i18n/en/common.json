@@ -1,0 +1,20 @@
+{
+  "success": {
+    "default": "Success",
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully",
+    "fetched": "Data retrieved successfully",
+    "login": "Logged in successfully",
+    "logout": "Logged out successfully"
+  },
+  "errors": {
+    "badRequest": "Bad request",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access denied",
+    "notFound": "Not found",
+    "conflict": "Conflict",
+    "internalServerError": "Internal server error",
+    "validationFailed": "Validation failed"
+  }
+}

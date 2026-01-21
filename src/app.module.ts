@@ -1,8 +1,10 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { I18nModule } from 'nestjs-i18n';
 import { i18nConfig } from './config/i18n.config';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 import { UserModule } from './modules/user/user.module';
 import { JwtModule } from './modules/jwt/jwt.module';
@@ -49,7 +51,12 @@ import { SupportTicketModule } from './modules/support-ticket/support-ticket.mod
     SupportTicketModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
