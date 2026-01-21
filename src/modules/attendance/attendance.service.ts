@@ -257,6 +257,20 @@ export class AttendanceService {
     };
   }
 
+  /**
+   * Delete all attendance records for employee (for testing)
+   */
+  async deleteAllAttendance(employeeId: string): Promise<{ message: string; deletedCount: number }> {
+    await this.ensureEmployeeActive(employeeId);
+
+    const deletedCount = await this.attendanceRepository.deleteAllByEmployee(employeeId);
+
+    return {
+      message: `Successfully deleted ${deletedCount} attendance record(s)`,
+      deletedCount,
+    };
+  }
+
   // Helper methods
 
   private async ensureEmployeeActive(employeeId: string): Promise<void> {

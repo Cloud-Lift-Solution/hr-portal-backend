@@ -184,4 +184,16 @@ export class AttendanceRepository {
       },
     });
   }
+
+  /**
+   * Delete all attendance records for an employee (for testing)
+   */
+  async deleteAllByEmployee(employeeId: string): Promise<number> {
+    const result = await this.prisma.attendance.deleteMany({
+      where: {
+        employeeId,
+      },
+    });
+    return result.count;
+  }
 }

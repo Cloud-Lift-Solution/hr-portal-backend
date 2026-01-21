@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Query,
   HttpCode,
@@ -129,5 +130,23 @@ export class AttendanceController {
       query.page,
       query.limit,
     );
+  }
+
+  /**
+   * Delete all attendance records (for testing)
+   * DELETE /attendance/clear-all
+   * Requires JWT authentication - employee ID extracted from token
+   * Deletes all attendance records for the logged-in employee
+   */
+  @Delete('clear-all')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary:
+      'Delete all attendance records for logged-in employee (for testing)',
+  })
+  async clearAllAttendance(
+    @CurrentUser() user: { id: string; email: string },
+  ): Promise<{ message: string; deletedCount: number }> {
+    return await this.attendanceService.deleteAllAttendance(user.id);
   }
 }
