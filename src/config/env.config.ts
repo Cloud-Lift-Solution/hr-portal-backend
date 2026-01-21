@@ -25,7 +25,7 @@ class EnvironmentVariables {
 
   // JWT Configuration
   @IsString()
-  @Transform(({ value }) => value || '1h')
+  @Transform(({ value }) => value || '40d')
   JWT_ACCESS_TOKEN_EXPIRY: string;
 
   @IsString()
