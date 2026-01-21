@@ -318,9 +318,16 @@ enum LoanType {
 }
 
 enum LoanStatus {
+  PENDING // Waiting for admin approval
   NOT_STARTED
   ACTIVE
   COMPLETED
+}
+
+enum InstallmentStatus {
+  PENDING
+  PAID
+  OVERDUE
 }
 
 model Loan {
@@ -330,6 +337,7 @@ model Loan {
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   loanAmount           Decimal  @db.Decimal(12, 2)
+  purpose              String   @db.VarChar(500) // Loan purpose/reason
   type                 LoanType
   numberOfInstallments Int
   numberOfPaymentsMade Int      @default(0)
@@ -339,8 +347,10 @@ model Loan {
   year  Int? // e.g., 2025
 
   paymentStartDate DateTime
-  note             String?    @db.VarChar(500)
-  status           LoanStatus @default(NOT_STARTED)
+  note             String?    @db.VarChar(500) // Admin notes
+  status           LoanStatus @default(PENDING)
+
+  installments LoanInstallment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -348,6 +358,29 @@ model Loan {
   @@index([employeeId])
   @@index([status])
   @@index([employeeId, status])
+}
+
+model LoanInstallment {
+  id String @id @default(uuid())
+
+  loanId String
+  loan   Loan   @relation(fields: [loanId], references: [id], onDelete: Cascade)
+
+  installmentNumber Int // 1, 2, 3, etc.
+  amount            Decimal            @db.Decimal(12, 2)
+  dueMonth          Int // 1-12
+  dueYear           Int // e.g., 2026
+  status            InstallmentStatus @default(PENDING)
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([loanId])
+  @@index([status])
+  @@index([loanId, installmentNumber])
+  @@index([dueYear, dueMonth])
 }
 
 // ============= ALLOWANCE MODEL =============
