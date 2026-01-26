@@ -25,6 +25,7 @@ import { ProjectModule } from './modules/project/project.module';
 import { ServerModule } from './modules/server/server.module';
 import { TicketCategoryModule } from './modules/ticket-category/ticket-category.module';
 import { SupportTicketModule } from './modules/support-ticket/support-ticket.module';
+import { RequestsModule } from './modules/requests/requests.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { SupportTicketModule } from './modules/support-ticket/support-ticket.mod
     ServerModule,
     TicketCategoryModule,
     SupportTicketModule,
+    RequestsModule,
   ],
   controllers: [],
   providers: [

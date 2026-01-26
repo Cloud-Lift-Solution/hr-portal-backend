@@ -109,6 +109,12 @@ enum VacationType {
   NOT_PAID
 }
 
+enum VacationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // ============= ATTENDANCE MODELS =============
 
 enum AttendanceStatus {
@@ -134,6 +140,10 @@ model Employee {
   companyEmail       String?        @unique
   password           String? // Hashed password for employee login
   status             EmployeeStatus @default(ACTIVE)
+
+  // Vacation balance tracking
+  totalVacationDays Decimal @default(0) @db.Decimal(5, 2) // Total annual vacation days allowance
+  usedVacationDays  Decimal @default(0) @db.Decimal(5, 2) // Days consumed from approved vacations
 
   // Relations
   departmentId String?
@@ -226,12 +236,17 @@ model Vacation {
 
   numberOfDays Int
 
+  description    String?         @db.VarChar(500)
+  attachmentUrls Json            @default("[]") // Array of file URLs
+  status         VacationStatus  @default(PENDING)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([employeeId])
   @@index([departureDay])
   @@index([returnDay])
+  @@index([status])
 }
 
 // SickLeave model
