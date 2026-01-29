@@ -113,6 +113,19 @@ enum VacationStatus {
   PENDING
   APPROVED
   REJECTED
+  CANCELLED
+}
+
+enum VacationExtensionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum VacationCancellationStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // ============= ATTENDANCE MODELS =============
@@ -157,6 +170,10 @@ model Employee {
   attendances    Attendance[]
   loans          Loan[]
   supportTickets SupportTicket[]
+
+  // Salary request relations
+  salaryAdvanceRequests     SalaryAdvanceRequest[]
+  salaryCertificateRequests SalaryCertificateRequest[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -240,6 +257,10 @@ model Vacation {
   attachmentUrls Json            @default("[]") // Array of file URLs
   status         VacationStatus  @default(PENDING)
 
+  // Relations
+  extensionRequests    VacationExtensionRequest[]
+  cancellationRequests VacationCancellationRequest[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -247,6 +268,52 @@ model Vacation {
   @@index([departureDay])
   @@index([returnDay])
   @@index([status])
+}
+
+// Vacation Extension Request model
+model VacationExtensionRequest {
+  id String @id @default(uuid())
+
+  vacationId String
+  vacation   Vacation @relation(fields: [vacationId], references: [id], onDelete: Cascade)
+
+  extendToDate   DateTime // New end date
+  additionalDays Int // Number of additional days requested
+  description    String?  @db.VarChar(500)
+  attachmentUrls Json     @default("[]") // Array of file URLs
+
+  status VacationExtensionStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vacationId])
+  @@index([status])
+}
+
+// Vacation Cancellation Request model
+model VacationCancellationRequest {
+  id String @id @default(uuid())
+
+  vacationId String
+  vacation   Vacation @relation(fields: [vacationId], references: [id], onDelete: Cascade)
+
+  description    String? @db.VarChar(500)
+  attachmentUrls Json    @default("[]") // Array of file URLs
+
+  status VacationCancellationStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([vacationId])
+  @@index([status])
+}
+
+enum SickLeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // SickLeave model
@@ -259,7 +326,8 @@ model SickLeave {
   returnDay     DateTime
   reason        String?  @db.VarChar(500)
   numberOfDays  Int
-  attachmentUrl String?  @db.Text
+  attachmentUrls Json   @default("[]") // Array of file URLs
+  status        SickLeaveStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -267,6 +335,61 @@ model SickLeave {
   @@index([employeeId])
   @@index([departureDay])
   @@index([returnDay])
+  @@index([status])
+}
+
+// ============= SALARY REQUEST MODELS =============
+
+enum SalaryAdvanceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SalaryCertificateStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Salary Advance Request model
+model SalaryAdvanceRequest {
+  id String @id @default(uuid())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  month       Int // 1-12
+  year        Int // e.g., 2026
+  description String? @db.VarChar(500)
+
+  status SalaryAdvanceStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
+  @@index([year, month])
+}
+
+// Salary Certificate Request model
+model SalaryCertificateRequest {
+  id String @id @default(uuid())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  reason      String  @db.VarChar(500)
+  description String? @db.VarChar(500)
+
+  status SalaryCertificateStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model Attendance {
