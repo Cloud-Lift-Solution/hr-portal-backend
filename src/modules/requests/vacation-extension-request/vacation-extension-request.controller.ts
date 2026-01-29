@@ -45,17 +45,6 @@ export class VacationExtensionRequestController {
   }
 
   /**
-   * Employee: Get my vacation extension requests
-   */
-  @Get('my-requests')
-  @HttpCode(HttpStatus.OK)
-  async findMyRequests(
-    @CurrentUser() user: any,
-  ): Promise<VacationExtensionRequestResponseDto[]> {
-    return this.vacationExtensionRequestService.findMyRequests(user.id);
-  }
-
-  /**
    * Admin: Get all vacation extension requests
    */
   @Get()

@@ -45,17 +45,6 @@ export class SalaryCertificateRequestController {
   }
 
   /**
-   * Employee: Get my salary certificate requests
-   */
-  @Get('my-requests')
-  @HttpCode(HttpStatus.OK)
-  async findMyRequests(
-    @CurrentUser() user: any,
-  ): Promise<SalaryCertificateRequestResponseDto[]> {
-    return this.salaryCertificateRequestService.findMyRequests(user.id);
-  }
-
-  /**
    * Admin: Get all salary certificate requests
    */
   @Get()

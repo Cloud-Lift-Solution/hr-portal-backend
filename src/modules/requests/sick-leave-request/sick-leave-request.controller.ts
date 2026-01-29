@@ -45,17 +45,6 @@ export class SickLeaveRequestController {
   }
 
   /**
-   * Employee: Get my sick leave requests
-   */
-  @Get('my-requests')
-  @HttpCode(HttpStatus.OK)
-  async findMyRequests(
-    @CurrentUser() user: any,
-  ): Promise<SickLeaveRequestResponseDto[]> {
-    return this.sickLeaveRequestService.findMyRequests(user.id);
-  }
-
-  /**
    * Admin: Get all sick leave requests
    */
   @Get()

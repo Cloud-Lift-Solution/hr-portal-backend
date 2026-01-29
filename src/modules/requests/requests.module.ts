@@ -13,10 +13,13 @@ import { SalaryAdvanceRequestController } from './salary-advance-request/salary-
 import { SalaryAdvanceRequestService } from './salary-advance-request/salary-advance-request.service';
 import { SalaryCertificateRequestController } from './salary-certificate-request/salary-certificate-request.controller';
 import { SalaryCertificateRequestService } from './salary-certificate-request/salary-certificate-request.service';
+import { UnifiedRequestsController } from './unified-requests.controller';
+import { UnifiedRequestsService } from './unified-requests.service';
 
 @Module({
   imports: [PrismaModule, JwtModule],
   controllers: [
+    UnifiedRequestsController,
     VacationRequestController,
     SickLeaveRequestController,
     VacationExtensionRequestController,
@@ -25,6 +28,7 @@ import { SalaryCertificateRequestService } from './salary-certificate-request/sa
     SalaryCertificateRequestController,
   ],
   providers: [
+    UnifiedRequestsService,
     VacationRequestService,
     SickLeaveRequestService,
     VacationExtensionRequestService,
@@ -33,6 +37,7 @@ import { SalaryCertificateRequestService } from './salary-certificate-request/sa
     SalaryCertificateRequestService,
   ],
   exports: [
+    UnifiedRequestsService,
     VacationRequestService,
     SickLeaveRequestService,
     VacationExtensionRequestService,

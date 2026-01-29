@@ -45,17 +45,6 @@ export class SalaryAdvanceRequestController {
   }
 
   /**
-   * Employee: Get my salary advance requests
-   */
-  @Get('my-requests')
-  @HttpCode(HttpStatus.OK)
-  async findMyRequests(
-    @CurrentUser() user: any,
-  ): Promise<SalaryAdvanceRequestResponseDto[]> {
-    return this.salaryAdvanceRequestService.findMyRequests(user.id);
-  }
-
-  /**
    * Admin: Get all salary advance requests
    */
   @Get()
