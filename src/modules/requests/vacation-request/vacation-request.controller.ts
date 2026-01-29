@@ -5,6 +5,7 @@ import {
   Patch,
   Body,
   Param,
+  Query,
   HttpCode,
   HttpStatus,
   UseGuards,
@@ -45,12 +46,15 @@ export class VacationRequestController {
   }
 
   /**
-   * Admin: Get all vacation requests
+   * Admin: Get all vacation requests (with optional status filter)
+   * @param status - Optional filter: PENDING, APPROVED, REJECTED, CANCELLED
    */
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<VacationRequestResponseDto[]> {
-    return this.vacationRequestService.findAll();
+  async findAll(
+    @Query('status') status?: string,
+  ): Promise<VacationRequestResponseDto[]> {
+    return this.vacationRequestService.findAll(status);
   }
 
   /**

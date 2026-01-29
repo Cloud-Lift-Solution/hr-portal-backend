@@ -97,8 +97,16 @@ export class VacationRequestService {
     return requests.map((r) => this.mapToResponseDto(r));
   }
 
-  async findAll(): Promise<VacationRequestResponseDto[]> {
+  async findAll(status?: string): Promise<VacationRequestResponseDto[]> {
+    const where: any = {};
+
+    // Add status filter if provided
+    if (status) {
+      where.status = status.toUpperCase();
+    }
+
     const requests = await this.prisma.vacation.findMany({
+      where,
       include: this.includeRelations,
       orderBy: [{ createdAt: 'desc' }],
     });
