@@ -17,37 +17,65 @@ export class UserService {
   ) {}
 
   /**
-   * Get user profile by ID
+   * Get employee profile by ID
    */
-  async getUserProfile(
-    userId: string,
-    languageCode: string,
-  ): Promise<UserProfileResponseDto> {
+  async getUserProfile(employeeId: string): Promise<UserProfileResponseDto> {
     try {
-      // Fetch user with all required relations
-      const user = await this.fetchUserWithRelations(userId, languageCode);
+      // Fetch employee with all required relations
+      const employee = await this.fetchEmployeeWithRelations(employeeId);
 
-      if (!user) {
-        throw new NotFoundException('User not found');
+      if (!employee) {
+        throw new NotFoundException('Employee not found');
       }
 
       // Map to DTO using mapper
-      return UserProfileMapper.toUserProfileDto(user);
+      return UserProfileMapper.toUserProfileDto(employee);
     } catch (error) {
-      throw new Error('Failed to fetch user profile');
+      this.logger.error(
+        `Failed to fetch employee profile for employeeId: ${employeeId}`,
+        error,
+      );
+
+      // Re-throw NotFoundException as-is
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      // Re-throw other errors with more context
+      throw error;
     }
   }
 
   /**
-   * Fetch user with all required relations and translations
+   * Fetch employee with all required relations
    */
-  private async fetchUserWithRelations(userId: string, languageCode: string) {
-    return this.prisma.user.findUnique({
-      where: { id: userId },
+  private async fetchEmployeeWithRelations(employeeId: string) {
+    return this.prisma.employee.findUnique({
+      where: { id: employeeId, status: 'ACTIVE' },
       select: {
         id: true,
-        email: true,
         name: true,
+        civilId: true,
+        civilIdExpiryDate: true,
+        passportNo: true,
+        passportExpiryDate: true,
+        nationality: true,
+        jobTitle: true,
+        startDate: true,
+        type: true,
+        salary: true,
+        iban: true,
+        personalEmail: true,
+        companyEmail: true,
+        status: true,
+        totalVacationDays: true,
+        usedVacationDays: true,
+        department: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
