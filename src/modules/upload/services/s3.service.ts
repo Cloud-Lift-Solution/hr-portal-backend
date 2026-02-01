@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { envConfig } from '../../../config/env.config';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import * as path from 'path';
 
 @Injectable()
@@ -134,7 +134,7 @@ export class S3Service {
     const sanitizedFileName = this.sanitizeFileName(fileName);
 
     // Generate unique filename
-    const uniqueId = uuidv4();
+    const uniqueId = randomUUID();
     const ext = path.extname(sanitizedFileName);
     const nameWithoutExt = path.basename(sanitizedFileName, ext);
     const uniqueFileName = `${uniqueId}-${nameWithoutExt}${ext}`;
