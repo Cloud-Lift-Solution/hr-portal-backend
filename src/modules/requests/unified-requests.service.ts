@@ -185,7 +185,12 @@ export class UnifiedRequestsService {
         createdAt: e.createdAt,
         updatedAt: e.updatedAt,
         data: {
-          vacation: e.vacation,
+          vacationId: e.vacation.id,
+          departureDay: e.vacation.departureDay,
+          returnDay: e.vacation.returnDay,
+          numberOfDays: e.vacation.numberOfDays,
+          reason: e.vacation.reason,
+          vacationType: e.vacation.type,
           extendToDate: e.extendToDate,
           additionalDays: e.additionalDays,
           description: e.description,
@@ -202,7 +207,12 @@ export class UnifiedRequestsService {
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
         data: {
-          vacation: c.vacation,
+          vacationId: c.vacation.id,
+          departureDay: c.vacation.departureDay,
+          returnDay: c.vacation.returnDay,
+          numberOfDays: c.vacation.numberOfDays,
+          reason: c.vacation.reason,
+          vacationType: c.vacation.type,
           description: c.description,
           attachmentUrls: Array.isArray(c.attachmentUrls)
             ? c.attachmentUrls
