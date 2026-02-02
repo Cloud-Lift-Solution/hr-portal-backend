@@ -122,14 +122,10 @@ export class S3Service {
   }
 
   /**
-   * Generate a unique file key with organized folder structure
-   * Format: uploads/YYYY/MM/uuid-originalfilename.ext
+   * Generate a unique file key
+   * Format: uuid-originalfilename.ext
    */
   private generateFileKey(fileName: string): string {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-
     // Sanitize filename
     const sanitizedFileName = this.sanitizeFileName(fileName);
 
@@ -139,7 +135,7 @@ export class S3Service {
     const nameWithoutExt = path.basename(sanitizedFileName, ext);
     const uniqueFileName = `${uniqueId}-${nameWithoutExt}${ext}`;
 
-    return `uploads/${year}/${month}/${uniqueFileName}`;
+    return uniqueFileName;
   }
 
   /**
