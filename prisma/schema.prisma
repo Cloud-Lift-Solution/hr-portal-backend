@@ -65,13 +65,71 @@ model Department {
   name String @unique // Department name (must be unique)
 
   // Relations
-  employees Employee[]
-  projects  Project[]
+  branches Branch[]
+  projects Project[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([name])
+}
+
+// ============= LANGUAGE MODEL =============
+
+model Language {
+  id   String @id @default(uuid())
+  code String @unique // 'en' or 'ar'
+  name String // 'English' or 'Arabic'
+
+  // Relations
+  branchTranslations BranchTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([code])
+}
+
+// ============= BRANCH MODELS =============
+
+model Branch {
+  id          String  @id @default(uuid())
+  openAnyTime Boolean @default(false) // Branch open any time flag
+
+  // Relations
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  workShiftId String?
+  workShift   WorkShift? @relation(fields: [workShiftId], references: [id], onDelete: SetNull)
+
+  translations BranchTranslation[]
+  employees    Employee[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([departmentId])
+  @@index([workShiftId])
+}
+
+model BranchTranslation {
+  id String @id @default(uuid())
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Restrict)
+
+  name String // Branch name in specific language
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([branchId, languageId])
+  @@index([branchId])
+  @@index([languageId])
 }
 
 // ============= EMPLOYEE MODELS =============
@@ -159,8 +217,8 @@ model Employee {
   usedVacationDays  Decimal @default(0) @db.Decimal(5, 2) // Days consumed from approved vacations
 
   // Relations
-  departmentId String?
-  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
 
   assets         EmployeeAsset[]
   attachments    EmployeeAttachment[]
@@ -179,7 +237,7 @@ model Employee {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // Soft delete timestamp
 
-  @@index([departmentId])
+  @@index([branchId])
   @@index([type])
   @@index([civilId])
   @@index([companyEmail])
@@ -454,6 +512,9 @@ model WorkShift {
 
   clockIn  DateTime @db.Time(0) // Clock in time (24-hour format)
   clockOut DateTime @db.Time(0) // Clock out time (24-hour format)
+
+  // Relations
+  branches Branch[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
