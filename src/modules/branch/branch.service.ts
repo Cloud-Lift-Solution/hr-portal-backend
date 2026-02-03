@@ -8,6 +8,10 @@ import {
   BranchDetailResponseDto,
 } from './dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @Injectable()
 export class BranchService {
@@ -19,11 +23,36 @@ export class BranchService {
   ) {}
 
   /**
-   * Get all branches with localized name
+   * Get all branches with localized name and pagination
    */
-  async findAll(language: string = 'en'): Promise<BranchResponseDto[]> {
-    const branches = await this.branchRepository.findAll();
-    return branches.map((branch) => this.mapToResponse(branch, language));
+  async findAll(
+    language: string = 'en',
+    page?: number,
+    limit?: number,
+  ): Promise<PaginatedResult<BranchResponseDto>> {
+    // Normalize pagination parameters
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+
+    // Calculate skip
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Get branches and total count
+    const [branches, total] = await Promise.all([
+      this.branchRepository.findAll(skip, normalizedLimit),
+      this.branchRepository.count(),
+    ]);
+
+    // Map to response DTOs
+    const data = branches.map((branch) => this.mapToResponse(branch, language));
+
+    // Return paginated result
+    return PaginationUtil.createPaginatedResult(
+      data,
+      normalizedPage,
+      normalizedLimit,
+      total,
+    );
   }
 
   /**
@@ -35,14 +64,37 @@ export class BranchService {
   }
 
   /**
-   * Get branches by department ID
+   * Get branches by department ID with pagination
    */
   async findByDepartmentId(
     departmentId: string,
     language: string = 'en',
-  ): Promise<BranchResponseDto[]> {
-    const branches = await this.branchRepository.findByDepartmentId(departmentId);
-    return branches.map((branch) => this.mapToResponse(branch, language));
+    page?: number,
+    limit?: number,
+  ): Promise<PaginatedResult<BranchResponseDto>> {
+    // Normalize pagination parameters
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+
+    // Calculate skip
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Get branches and total count
+    const [branches, total] = await Promise.all([
+      this.branchRepository.findByDepartmentId(departmentId, skip, normalizedLimit),
+      this.branchRepository.countByDepartmentId(departmentId),
+    ]);
+
+    // Map to response DTOs
+    const data = branches.map((branch) => this.mapToResponse(branch, language));
+
+    // Return paginated result
+    return PaginationUtil.createPaginatedResult(
+      data,
+      normalizedPage,
+      normalizedLimit,
+      total,
+    );
   }
 
   /**

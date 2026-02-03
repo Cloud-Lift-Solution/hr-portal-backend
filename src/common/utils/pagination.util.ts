@@ -28,7 +28,11 @@ export class PaginationUtil {
   /**
    * Create pagination metadata
    */
-  static createMeta(page: number, limit: number, total: number): PaginationMeta {
+  static createMeta(
+    page: number,
+    limit: number,
+    total: number,
+  ): PaginationMeta {
     const totalPages = Math.ceil(total / limit);
 
     return {

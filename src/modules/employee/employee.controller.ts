@@ -12,6 +12,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiQuery } from '@nestjs/swagger';
 import { EmploymentType } from '@prisma/client';
@@ -22,6 +23,7 @@ import {
   EmployeeResponseDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
+import { PaginatedResult } from '../../common/utils/pagination.util';
 
 @ApiTags('Employees')
 // @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
@@ -32,24 +34,32 @@ export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
   /**
-   * Get all employees with optional filters
-   * GET /employees?search=name&departmentId=uuid&type=FULL_TIME
+   * Get all employees with optional filters and pagination
+   * GET /employees?search=name&departmentId=uuid&type=FULL_TIME&page=1&limit=20
    */
   @Get()
   @HttpCode(HttpStatus.OK)
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'departmentId', required: false, type: String })
   @ApiQuery({ name: 'type', required: false, enum: EmploymentType })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   async findAll(
     @Query('search') search?: string,
     @Query('departmentId') departmentId?: string,
     @Query('type') type?: EmploymentType,
-  ): Promise<EmployeeResponseDto[]> {
-    return await this.employeeService.findAll({
-      search,
-      departmentId,
-      type,
-    });
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ): Promise<PaginatedResult<EmployeeResponseDto>> {
+    return await this.employeeService.findAll(
+      {
+        search,
+        departmentId,
+        type,
+      },
+      page,
+      limit,
+    );
   }
 
   /**

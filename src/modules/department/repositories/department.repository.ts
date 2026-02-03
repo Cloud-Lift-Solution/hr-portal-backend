@@ -6,9 +6,9 @@ export class DepartmentRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Find all departments with optional search
+   * Find all departments with optional search and pagination
    */
-  async findAll(search?: string) {
+  async findAll(search?: string, skip?: number, take?: number) {
     return this.prisma.department.findMany({
       where: search
         ? {
@@ -20,6 +20,23 @@ export class DepartmentRepository {
       orderBy: {
         name: 'asc',
       },
+      skip,
+      take,
+    });
+  }
+
+  /**
+   * Count departments with optional search filter
+   */
+  async count(search?: string): Promise<number> {
+    return this.prisma.department.count({
+      where: search
+        ? {
+            name: {
+              contains: search,
+            },
+          }
+        : undefined,
     });
   }
 

@@ -7,6 +7,10 @@ import {
   DepartmentResponseDto,
 } from './dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @Injectable()
 export class DepartmentService {
@@ -18,11 +22,33 @@ export class DepartmentService {
   ) {}
 
   /**
-   * Get all departments with optional search
+   * Get all departments with optional search and pagination
    */
-  async findAll(search?: string): Promise<DepartmentResponseDto[]> {
-    const departments = await this.departmentRepository.findAll(search);
-    return departments as DepartmentResponseDto[];
+  async findAll(
+    search?: string,
+    page?: number,
+    limit?: number,
+  ): Promise<PaginatedResult<DepartmentResponseDto>> {
+    // Normalize pagination parameters
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+
+    // Calculate skip
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Get departments and total count
+    const [departments, total] = await Promise.all([
+      this.departmentRepository.findAll(search, skip, normalizedLimit),
+      this.departmentRepository.count(search),
+    ]);
+
+    // Return paginated result
+    return PaginationUtil.createPaginatedResult(
+      departments as DepartmentResponseDto[],
+      normalizedPage,
+      normalizedLimit,
+      total,
+    );
   }
 
   /**

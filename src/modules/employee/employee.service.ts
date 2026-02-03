@@ -8,6 +8,10 @@ import {
   EmployeeResponseDto,
 } from './dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @Injectable()
 export class EmployeeService {
@@ -19,15 +23,40 @@ export class EmployeeService {
   ) {}
 
   /**
-   * Get all employees with optional filters
+   * Get all employees with optional filters and pagination
    */
-  async findAll(filters?: {
-    search?: string;
-    departmentId?: string;
-    type?: EmploymentType;
-  }): Promise<EmployeeResponseDto[]> {
-    const employees = await this.employeeRepository.findAll(filters);
-    return employees.map((employee) => this.mapToResponseDto(employee));
+  async findAll(
+    filters?: {
+      search?: string;
+      departmentId?: string;
+      type?: EmploymentType;
+    },
+    page?: number,
+    limit?: number,
+  ): Promise<PaginatedResult<EmployeeResponseDto>> {
+    // Normalize pagination parameters
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+
+    // Calculate skip
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Get employees and total count
+    const [employees, total] = await Promise.all([
+      this.employeeRepository.findAll(filters, skip, normalizedLimit),
+      this.employeeRepository.count(filters),
+    ]);
+
+    // Map to response DTOs
+    const data = employees.map((employee) => this.mapToResponseDto(employee));
+
+    // Return paginated result
+    return PaginationUtil.createPaginatedResult(
+      data,
+      normalizedPage,
+      normalizedLimit,
+      total,
+    );
   }
 
   /**

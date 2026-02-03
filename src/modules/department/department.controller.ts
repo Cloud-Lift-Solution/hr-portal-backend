@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { DepartmentService } from './department.service';
@@ -20,6 +21,7 @@ import {
   DepartmentResponseDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
+import { PaginatedResult } from '../../common/utils/pagination.util';
 
 @ApiTags('Departments')
 // @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
@@ -30,15 +32,17 @@ export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   /**
-   * Get all departments with optional search
-   * GET /departments?search=HR
+   * Get all departments with optional search and pagination
+   * GET /departments?search=HR&page=1&limit=20
    */
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query('search') search?: string,
-  ): Promise<DepartmentResponseDto[]> {
-    return await this.departmentService.findAll(search);
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ): Promise<PaginatedResult<DepartmentResponseDto>> {
+    return await this.departmentService.findAll(search, page, limit);
   }
 
   /**

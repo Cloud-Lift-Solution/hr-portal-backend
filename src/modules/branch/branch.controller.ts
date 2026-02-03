@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BranchService } from './branch.service';
@@ -21,6 +22,7 @@ import {
   BranchDetailResponseDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
+import { PaginatedResult } from '../../common/utils/pagination.util';
 
 @ApiTags('Branches')
 // @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
@@ -31,15 +33,17 @@ export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 
   /**
-   * Get all branches (localized)
-   * GET /branches
+   * Get all branches (localized) with pagination
+   * GET /branches?page=1&limit=20
    */
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
     @AcceptLanguage() language: string,
-  ): Promise<BranchResponseDto[]> {
-    return await this.branchService.findAll(language);
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ): Promise<PaginatedResult<BranchResponseDto>> {
+    return await this.branchService.findAll(language, page, limit);
   }
 
   /**
@@ -53,16 +57,18 @@ export class BranchController {
   }
 
   /**
-   * Get branches by department ID
-   * GET /branches/by-department/:departmentId
+   * Get branches by department ID with pagination
+   * GET /branches/by-department/:departmentId?page=1&limit=20
    */
   @Get('by-department/:departmentId')
   @HttpCode(HttpStatus.OK)
   async findByDepartmentId(
     @Param('departmentId') departmentId: string,
     @AcceptLanguage() language: string,
-  ): Promise<BranchResponseDto[]> {
-    return await this.branchService.findByDepartmentId(departmentId, language);
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ): Promise<PaginatedResult<BranchResponseDto>> {
+    return await this.branchService.findByDepartmentId(departmentId, language, page, limit);
   }
 
   /**

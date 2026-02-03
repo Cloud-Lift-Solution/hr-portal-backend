@@ -8,7 +8,7 @@ export class BranchRepository {
   /**
    * Find all branches with translations and department info
    */
-  async findAll() {
+  async findAll(skip?: number, take?: number) {
     return this.prisma.branch.findMany({
       include: {
         translations: {
@@ -22,7 +22,16 @@ export class BranchRepository {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take,
     });
+  }
+
+  /**
+   * Count all branches
+   */
+  async count(): Promise<number> {
+    return this.prisma.branch.count();
   }
 
   /**
@@ -46,7 +55,7 @@ export class BranchRepository {
   /**
    * Find branches by department ID
    */
-  async findByDepartmentId(departmentId: string) {
+  async findByDepartmentId(departmentId: string, skip?: number, take?: number) {
     return this.prisma.branch.findMany({
       where: { departmentId },
       include: {
@@ -61,6 +70,17 @@ export class BranchRepository {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take,
+    });
+  }
+
+  /**
+   * Count branches by department ID
+   */
+  async countByDepartmentId(departmentId: string): Promise<number> {
+    return this.prisma.branch.count({
+      where: { departmentId },
     });
   }
 

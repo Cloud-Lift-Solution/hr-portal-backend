@@ -38,13 +38,17 @@ export class EmployeeRepository {
   };
 
   /**
-   * Find all employees with optional filters (only active employees)
+   * Find all employees with optional filters and pagination (only active employees)
    */
-  async findAll(filters?: {
-    search?: string;
-    departmentId?: string;
-    type?: EmploymentType;
-  }) {
+  async findAll(
+    filters?: {
+      search?: string;
+      departmentId?: string;
+      type?: EmploymentType;
+    },
+    skip?: number,
+    take?: number,
+  ) {
     const where: Prisma.EmployeeWhereInput = {
       ...this.activeCondition,
     };
@@ -71,7 +75,40 @@ export class EmployeeRepository {
       orderBy: {
         name: 'asc',
       },
+      skip,
+      take,
     });
+  }
+
+  /**
+   * Count employees with optional filters (only active employees)
+   */
+  async count(filters?: {
+    search?: string;
+    departmentId?: string;
+    type?: EmploymentType;
+  }): Promise<number> {
+    const where: Prisma.EmployeeWhereInput = {
+      ...this.activeCondition,
+    };
+
+    if (filters?.search) {
+      where.OR = [
+        { name: { contains: filters.search } },
+        { companyEmail: { contains: filters.search } },
+        { civilId: { contains: filters.search } },
+      ];
+    }
+
+    if (filters?.departmentId) {
+      where.branchId = filters.departmentId;
+    }
+
+    if (filters?.type) {
+      where.type = filters.type;
+    }
+
+    return this.prisma.employee.count({ where });
   }
 
   /**
