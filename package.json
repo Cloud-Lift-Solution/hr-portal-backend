@@ -35,7 +35,8 @@
     "seed:employee": "ts-node prisma/seeds/seed-employee.ts",
     "seed:support:tickets": "ts-node prisma/seeds/seed-support-tickets.ts",
     "seed:loans": "ts-node prisma/seeds/seed-loans.ts",
-    "seed:requests": "ts-node prisma/seeds/seed-requests.ts"
+    "seed:requests": "ts-node prisma/seeds/seed-requests.ts",
+    "seed:assets": "ts-node prisma/seeds/seed-employee-assets.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.980.0",

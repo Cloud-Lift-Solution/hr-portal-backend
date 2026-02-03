@@ -6,12 +6,15 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { UserProfileResponseDto } from './dto';
+import { UserProfileResponseDto, EmployeeAssetResponseDto } from './dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { PaginatedResult } from '../../common/utils/pagination.util';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -30,5 +33,21 @@ export class UserController {
     @CurrentUser() user: { id: string; email: string },
   ): Promise<UserProfileResponseDto> {
     return await this.userService.getUserProfile(user.id);
+  }
+
+  /**
+   * Get assets assigned to the logged-in employee
+   * GET /user/assets?page=1&limit=20
+   */
+  @Get('assets')
+  @HttpCode(HttpStatus.OK)
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  async getMyAssets(
+    @CurrentUser() user: { id: string; email: string },
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ): Promise<PaginatedResult<EmployeeAssetResponseDto>> {
+    return await this.userService.getMyAssets(user.id, page, limit);
   }
 }
