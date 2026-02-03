@@ -1,0 +1,11 @@
+{
+  "notFound": "Work shift not found",
+  "nameExists": "A work shift with this name already exists",
+  "createSuccess": "Work shift created successfully",
+  "updateSuccess": "Work shift updated successfully",
+  "deleteSuccess": "Work shift deleted successfully",
+  "fetchFailed": "Failed to fetch work shift",
+  "createFailed": "Failed to create work shift",
+  "updateFailed": "Failed to update work shift",
+  "deleteFailed": "Failed to delete work shift"
+}

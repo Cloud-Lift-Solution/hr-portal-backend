@@ -27,6 +27,7 @@ import { TicketCategoryModule } from './modules/ticket-category/ticket-category.
 import { SupportTicketModule } from './modules/support-ticket/support-ticket.module';
 import { RequestsModule } from './modules/requests/requests.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { WorkShiftModule } from './modules/work-shift/work-shift.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { UploadModule } from './modules/upload/upload.module';
     SupportTicketModule,
     RequestsModule,
     UploadModule,
+    WorkShiftModule,
   ],
   controllers: [],
   providers: [

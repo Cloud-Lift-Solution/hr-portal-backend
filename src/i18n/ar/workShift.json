@@ -1,0 +1,11 @@
+{
+  "notFound": "الوردية غير موجودة",
+  "nameExists": "يوجد وردية بهذا الاسم بالفعل",
+  "createSuccess": "تم إنشاء الوردية بنجاح",
+  "updateSuccess": "تم تحديث الوردية بنجاح",
+  "deleteSuccess": "تم حذف الوردية بنجاح",
+  "fetchFailed": "فشل في جلب الوردية",
+  "createFailed": "فشل في إنشاء الوردية",
+  "updateFailed": "فشل في تحديث الوردية",
+  "deleteFailed": "فشل في حذف الوردية"
+}
