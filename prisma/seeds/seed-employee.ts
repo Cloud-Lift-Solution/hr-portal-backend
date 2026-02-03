@@ -10,7 +10,38 @@ async function main() {
   const hashedPassword = await hashPassword('Ibrahim@123');
   console.log('✅ Password hashed successfully');
 
-  // Check if department exists, if not create one
+  // 1. Ensure languages exist (required for branch translations)
+  let enLanguage = await prisma.language.findUnique({
+    where: { code: 'en' },
+  });
+
+  if (!enLanguage) {
+    console.log('🌐 Creating English language...');
+    enLanguage = await prisma.language.create({
+      data: {
+        code: 'en',
+        name: 'English',
+      },
+    });
+    console.log('✅ English language created');
+  }
+
+  let arLanguage = await prisma.language.findUnique({
+    where: { code: 'ar' },
+  });
+
+  if (!arLanguage) {
+    console.log('🌐 Creating Arabic language...');
+    arLanguage = await prisma.language.create({
+      data: {
+        code: 'ar',
+        name: 'العربية',
+      },
+    });
+    console.log('✅ Arabic language created');
+  }
+
+  // 2. Check if department exists, if not create one
   let department = await prisma.department.findFirst();
 
   if (!department) {
@@ -25,6 +56,62 @@ async function main() {
     console.log(`✅ Using existing department: ${department.name}`);
   }
 
+  // 3. Check if default work shift exists, if not create one
+  let workShift = await prisma.workShift.findFirst();
+
+  if (!workShift) {
+    console.log('⏰ No work shift found, creating default work shift...');
+    workShift = await prisma.workShift.create({
+      data: {
+        name: 'Standard Shift',
+        clockIn: new Date('1970-01-01T09:00:00.000Z'),
+        clockOut: new Date('1970-01-01T17:00:00.000Z'),
+      },
+    });
+    console.log(`✅ Created work shift: ${workShift.name} (09:00 - 17:00)`);
+  } else {
+    console.log(`✅ Using existing work shift: ${workShift.name}`);
+  }
+
+  // 4. Check if default branch exists, if not create one
+  let branch = await prisma.branch.findFirst({
+    where: {
+      departmentId: department.id,
+    },
+    include: {
+      translations: true,
+    },
+  });
+
+  if (!branch) {
+    console.log('🏢 No branch found, creating default branch...');
+    branch = await prisma.branch.create({
+      data: {
+        departmentId: department.id,
+        openAnyTime: true,
+        workShiftId: workShift.id,
+        translations: {
+          create: [
+            {
+              languageId: enLanguage.id,
+              name: 'Main Office',
+            },
+            {
+              languageId: arLanguage.id,
+              name: 'المكتب الرئيسي',
+            },
+          ],
+        },
+      },
+      include: {
+        translations: true,
+      },
+    });
+    console.log(`✅ Created branch: Main Office / المكتب الرئيسي`);
+  } else {
+    console.log(`✅ Using existing branch (ID: ${branch.id})`);
+  }
+
   // Check if employee with this email already exists
   const existingEmployee = await prisma.employee.findUnique({
     where: {
@@ -37,16 +124,17 @@ async function main() {
     console.log(`   Employee ID: ${existingEmployee.id}`);
     console.log(`   Employee Name: ${existingEmployee.name}`);
 
-    // Update the password
+    // Update the password and branch
     const updatedEmployee = await prisma.employee.update({
       where: {
         companyEmail: 'ibrahim@syntax.com',
       },
       data: {
         password: hashedPassword,
+        branchId: branch.id,
       },
     });
-    console.log('✅ Updated employee password');
+    console.log('✅ Updated employee password and branch assignment');
     return;
   }
 
@@ -58,7 +146,7 @@ async function main() {
       password: hashedPassword,
       type: EmploymentType.FULL_TIME,
       status: EmployeeStatus.ACTIVE,
-      departmentId: department.id,
+      branchId: branch.id,
       jobTitle: 'Software Engineer',
       startDate: new Date(),
       nationality: 'Kuwait',
@@ -70,6 +158,7 @@ async function main() {
   console.log(`   ID: ${employee.id}`);
   console.log(`   Name: ${employee.name}`);
   console.log(`   Email: ${employee.companyEmail}`);
+  console.log(`   Branch: Main Office (${branch.id})`);
   console.log(`   Department: ${department.name}`);
   console.log(`   Job Title: ${employee.jobTitle}`);
   console.log('🎉 Seed completed!');

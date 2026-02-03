@@ -1,0 +1,11 @@
+{
+  "notFound": "Language not found",
+  "codeExists": "A language with this code already exists",
+  "createSuccess": "Language created successfully",
+  "updateSuccess": "Language updated successfully",
+  "deleteSuccess": "Language deleted successfully",
+  "fetchFailed": "Failed to fetch language",
+  "createFailed": "Failed to create language",
+  "updateFailed": "Failed to update language",
+  "deleteFailed": "Failed to delete language"
+}

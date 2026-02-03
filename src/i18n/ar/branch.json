@@ -1,0 +1,11 @@
+{
+  "notFound": "الفرع غير موجود",
+  "nameExists": "يوجد فرع بهذا الاسم بالفعل",
+  "createSuccess": "تم إنشاء الفرع بنجاح",
+  "updateSuccess": "تم تحديث الفرع بنجاح",
+  "deleteSuccess": "تم حذف الفرع بنجاح",
+  "fetchFailed": "فشل في جلب الفرع",
+  "createFailed": "فشل في إنشاء الفرع",
+  "updateFailed": "فشل في تحديث الفرع",
+  "deleteFailed": "فشل في حذف الفرع"
+}

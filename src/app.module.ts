@@ -28,6 +28,8 @@ import { SupportTicketModule } from './modules/support-ticket/support-ticket.mod
 import { RequestsModule } from './modules/requests/requests.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { WorkShiftModule } from './modules/work-shift/work-shift.module';
+import { LanguageModule } from './modules/language/language.module';
+import { BranchModule } from './modules/branch/branch.module';
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { WorkShiftModule } from './modules/work-shift/work-shift.module';
     RequestsModule,
     UploadModule,
     WorkShiftModule,
+    LanguageModule,
+    BranchModule,
   ],
   controllers: [],
   providers: [

@@ -1,0 +1,11 @@
+{
+  "notFound": "Branch not found",
+  "nameExists": "A branch with this name already exists",
+  "createSuccess": "Branch created successfully",
+  "updateSuccess": "Branch updated successfully",
+  "deleteSuccess": "Branch deleted successfully",
+  "fetchFailed": "Failed to fetch branch",
+  "createFailed": "Failed to create branch",
+  "updateFailed": "Failed to update branch",
+  "deleteFailed": "Failed to delete branch"
+}

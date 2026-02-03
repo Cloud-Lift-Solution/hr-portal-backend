@@ -1,0 +1,11 @@
+{
+  "notFound": "اللغة غير موجودة",
+  "codeExists": "يوجد لغة بهذا الرمز بالفعل",
+  "createSuccess": "تم إنشاء اللغة بنجاح",
+  "updateSuccess": "تم تحديث اللغة بنجاح",
+  "deleteSuccess": "تم حذف اللغة بنجاح",
+  "fetchFailed": "فشل في جلب اللغة",
+  "createFailed": "فشل في إنشاء اللغة",
+  "updateFailed": "فشل في تحديث اللغة",
+  "deleteFailed": "فشل في حذف اللغة"
+}
