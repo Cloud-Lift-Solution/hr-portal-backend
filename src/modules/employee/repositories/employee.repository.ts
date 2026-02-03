@@ -58,7 +58,7 @@ export class EmployeeRepository {
     }
 
     if (filters?.departmentId) {
-      where.departmentId = filters.departmentId;
+      where.branchId = filters.departmentId;
     }
 
     if (filters?.type) {
@@ -140,7 +140,7 @@ export class EmployeeRepository {
         iban: data.iban,
         personalEmail: data.personalEmail,
         companyEmail: data.companyEmail,
-        departmentId: data.departmentId,
+        branchId: data.departmentId,
         assets: data.assetIds?.length
           ? {
               create: data.assetIds.map((assetId) => ({
