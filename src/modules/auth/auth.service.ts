@@ -65,10 +65,10 @@ export class AuthService {
       name: employee.name,
       companyEmail: employee.companyEmail!,
       jobTitle: employee.jobTitle ?? undefined,
-      department: employee.department
+      department: employee.branch?.department
         ? {
-            id: employee.department.id,
-            name: employee.department.name,
+            id: employee.branch.department.id,
+            name: employee.branch.department.name,
           }
         : undefined,
     };
@@ -112,10 +112,10 @@ export class AuthService {
       name: employee.name,
       companyEmail: employee.companyEmail!,
       jobTitle: employee.jobTitle ?? undefined,
-      department: employee.department
+      department: employee.branch?.department
         ? {
-            id: employee.department.id,
-            name: employee.department.name,
+            id: employee.branch.department.id,
+            name: employee.branch.department.name,
           }
         : undefined,
     };

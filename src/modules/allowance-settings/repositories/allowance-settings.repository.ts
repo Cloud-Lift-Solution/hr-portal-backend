@@ -12,7 +12,7 @@ export class AllowanceSettingsRepository {
    */
   async getSettings() {
     const settings = await this.prisma.allowanceSettings.findFirst();
-    
+
     if (!settings) return null;
 
     // Convert JSON fields to arrays
@@ -21,17 +21,13 @@ export class AllowanceSettingsRepository {
       allowancesInVacations: Array.isArray(settings.allowancesInVacations)
         ? settings.allowancesInVacations
         : [],
-      allowancesNotInVacations: Array.isArray(
-        settings.allowancesNotInVacations,
-      )
+      allowancesNotInVacations: Array.isArray(settings.allowancesNotInVacations)
         ? settings.allowancesNotInVacations
         : [],
       allowancesInSickLeave: Array.isArray(settings.allowancesInSickLeave)
         ? settings.allowancesInSickLeave
         : [],
-      allowancesNotInSickLeave: Array.isArray(
-        settings.allowancesNotInSickLeave,
-      )
+      allowancesNotInSickLeave: Array.isArray(settings.allowancesNotInSickLeave)
         ? settings.allowancesNotInSickLeave
         : [],
       excludedEmployeeIds: Array.isArray(settings.excludedEmployeeIds)
@@ -84,17 +80,13 @@ export class AllowanceSettingsRepository {
       allowancesInVacations: Array.isArray(settings.allowancesInVacations)
         ? settings.allowancesInVacations
         : [],
-      allowancesNotInVacations: Array.isArray(
-        settings.allowancesNotInVacations,
-      )
+      allowancesNotInVacations: Array.isArray(settings.allowancesNotInVacations)
         ? settings.allowancesNotInVacations
         : [],
       allowancesInSickLeave: Array.isArray(settings.allowancesInSickLeave)
         ? settings.allowancesInSickLeave
         : [],
-      allowancesNotInSickLeave: Array.isArray(
-        settings.allowancesNotInSickLeave,
-      )
+      allowancesNotInSickLeave: Array.isArray(settings.allowancesNotInSickLeave)
         ? settings.allowancesNotInSickLeave
         : [],
       excludedEmployeeIds: Array.isArray(settings.excludedEmployeeIds)
@@ -140,10 +132,20 @@ export class AllowanceSettingsRepository {
         id: true,
         name: true,
         companyEmail: true,
-        department: {
+        branch: {
           select: {
             id: true,
-            name: true,
+            translations: {
+              select: {
+                name: true,
+              },
+            },
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -172,4 +174,3 @@ export class AllowanceSettingsRepository {
     return employees.map((e) => e.id);
   }
 }
-

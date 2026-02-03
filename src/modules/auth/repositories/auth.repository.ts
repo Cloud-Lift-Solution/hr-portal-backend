@@ -23,10 +23,20 @@ export class AuthRepository {
         jobTitle: true,
         password: true,
         status: true,
-        department: {
+        branch: {
           select: {
             id: true,
-            name: true,
+            translations: {
+              select: {
+                name: true,
+              },
+            },
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -47,10 +57,20 @@ export class AuthRepository {
         name: true,
         companyEmail: true,
         jobTitle: true,
-        department: {
+        branch: {
           select: {
             id: true,
-            name: true,
+            translations: {
+              select: {
+                name: true,
+              },
+            },
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
