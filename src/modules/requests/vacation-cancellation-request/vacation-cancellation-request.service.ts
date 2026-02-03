@@ -26,8 +26,16 @@ export class VacationCancellationRequestService {
             companyEmail: true,
             totalVacationDays: true,
             usedVacationDays: true,
-            department: {
-              select: { id: true, name: true },
+            branch: {
+              select: {
+                id: true,
+                translations: {
+                  select: {
+                    name: true,
+                  },
+                },
+                department: { select: { id: true, name: true } },
+              },
             },
           },
         },
@@ -50,8 +58,16 @@ export class VacationCancellationRequestService {
             companyEmail: true,
             totalVacationDays: true,
             usedVacationDays: true,
-            department: {
-              select: { id: true, name: true },
+            branch: {
+              select: {
+                id: true,
+                translations: {
+                  select: {
+                    name: true,
+                  },
+                },
+                department: { select: { id: true, name: true } },
+              },
             },
           },
         },

@@ -70,10 +70,20 @@ export class UserService {
         status: true,
         totalVacationDays: true,
         usedVacationDays: true,
-        department: {
+        branch: {
           select: {
             id: true,
-            name: true,
+            translations: {
+              select: {
+                name: true,
+              },
+            },
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },

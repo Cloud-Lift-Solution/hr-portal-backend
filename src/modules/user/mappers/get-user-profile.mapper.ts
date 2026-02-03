@@ -23,9 +23,15 @@ export class UserProfileMapper {
     status: string;
     totalVacationDays: Decimal;
     usedVacationDays: Decimal;
-    department: {
+    branch: {
       id: string;
-      name: string;
+      translations: {
+        name: string;
+      }[];
+      department: {
+        id: string;
+        name: string;
+      };
     } | null;
   }): UserProfileResponseDto {
     return {
@@ -46,10 +52,10 @@ export class UserProfileMapper {
       status: employee.status,
       totalVacationDays: Number(employee.totalVacationDays),
       usedVacationDays: Number(employee.usedVacationDays),
-      department: employee.department
+      department: employee.branch?.department
         ? {
-            id: employee.department.id,
-            name: employee.department.name,
+            id: employee.branch.department.id,
+            name: employee.branch.department.name,
           }
         : undefined,
     };
