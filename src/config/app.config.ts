@@ -18,7 +18,7 @@ export const securityConfig = helmet({
 
 // CORS Configuration - Allow all origins
 export const corsConfig: CorsOptions = {
-  origin: 'https://skill-gain.nadsoft.co',
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type',
