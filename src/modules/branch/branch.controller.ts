@@ -11,7 +11,6 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BranchService } from './branch.service';
@@ -40,9 +39,13 @@ export class BranchController {
   @HttpCode(HttpStatus.OK)
   async findAll(
     @AcceptLanguage() language: string,
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page') pageParam?: string,
+    @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<BranchResponseDto>> {
+    // Parse pagination parameters safely
+    const page = pageParam ? parseInt(pageParam, 10) : undefined;
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
     return await this.branchService.findAll(language, page, limit);
   }
 
@@ -65,9 +68,13 @@ export class BranchController {
   async findByDepartmentId(
     @Param('departmentId') departmentId: string,
     @AcceptLanguage() language: string,
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page') pageParam?: string,
+    @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<BranchResponseDto>> {
+    // Parse pagination parameters safely
+    const page = pageParam ? parseInt(pageParam, 10) : undefined;
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
     return await this.branchService.findByDepartmentId(departmentId, language, page, limit);
   }
 

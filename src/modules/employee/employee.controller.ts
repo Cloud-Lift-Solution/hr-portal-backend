@@ -12,7 +12,6 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiQuery } from '@nestjs/swagger';
 import { EmploymentType } from '@prisma/client';
@@ -48,9 +47,13 @@ export class EmployeeController {
     @Query('search') search?: string,
     @Query('departmentId') departmentId?: string,
     @Query('type') type?: EmploymentType,
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page') pageParam?: string,
+    @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<EmployeeResponseDto>> {
+    // Parse pagination parameters safely
+    const page = pageParam ? parseInt(pageParam, 10) : undefined;
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
     return await this.employeeService.findAll(
       {
         search,

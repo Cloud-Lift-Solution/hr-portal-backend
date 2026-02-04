@@ -7,7 +7,6 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -45,9 +44,13 @@ export class UserController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   async getMyAssets(
     @CurrentUser() user: { id: string; email: string },
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page') pageParam?: string,
+    @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<EmployeeAssetResponseDto>> {
+    // Parse pagination parameters safely
+    const page = pageParam ? parseInt(pageParam, 10) : undefined;
+    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
+
     return await this.userService.getMyAssets(user.id, page, limit);
   }
 }
