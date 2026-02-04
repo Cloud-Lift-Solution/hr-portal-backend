@@ -4,3 +4,4 @@ export {
   AssetCategoryDto,
 } from './employee-asset-response.dto';
 export { TeamMemberResponseDto } from './team-member-response.dto';
+export { EmployeeOverviewResponseDto } from './employee-overview-response.dto';

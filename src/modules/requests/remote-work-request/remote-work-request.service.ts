@@ -141,7 +141,9 @@ export class RemoteWorkRequestService {
     });
 
     if (!employee) {
-      throw TranslatedException.notFound('remoteWork.employeeNotFoundOrInactive');
+      throw TranslatedException.notFound(
+        'remoteWork.employeeNotFoundOrInactive',
+      );
     }
   }
 

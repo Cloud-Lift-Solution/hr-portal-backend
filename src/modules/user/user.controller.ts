@@ -14,6 +14,7 @@ import {
   UserProfileResponseDto,
   EmployeeAssetResponseDto,
   TeamMemberResponseDto,
+  EmployeeOverviewResponseDto,
 } from './dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -73,5 +74,17 @@ export class UserController {
   ): Promise<PaginatedResult<TeamMemberResponseDto>> {
     const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.userService.getTeamMembers(user.id, page, limit);
+  }
+
+  /**
+   * Get employee overview — absence days, vacation, salary, assets
+   * GET /user/overview
+   */
+  @Get('overview')
+  @HttpCode(HttpStatus.OK)
+  async getOverview(
+    @CurrentUser() user: { id: string; email: string },
+  ): Promise<EmployeeOverviewResponseDto> {
+    return await this.userService.getEmployeeOverview(user.id);
   }
 }

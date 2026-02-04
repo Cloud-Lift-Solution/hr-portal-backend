@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { EmployeeAssetResponseDto } from './dto/employee-asset-response.dto';
 import { TeamMemberResponseDto } from './dto/team-member-response.dto';
+import { EmployeeOverviewResponseDto } from './dto/employee-overview-response.dto';
 import { UserProfileMapper } from './mappers/get-user-profile.mapper';
 import { TranslatedException } from 'src/common/exceptions/business.exception';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -205,5 +206,46 @@ export class UserService {
       normalizedLimit,
       total,
     );
+  }
+
+  /**
+   * Get employee overview data
+   */
+  async getEmployeeOverview(
+    employeeId: string,
+  ): Promise<EmployeeOverviewResponseDto> {
+    try {
+      // Fetch overview data, sick leave days, and asset count in parallel
+      const [overviewData, sickLeaveDays, assetCount] = await Promise.all([
+        this.userRepository.findEmployeeOverviewData(employeeId),
+        this.userRepository.sumSickLeaveDays(employeeId),
+        this.userRepository.countEmployeeAssets(employeeId),
+      ]);
+
+      if (!overviewData) {
+        throw new NotFoundException('Employee not found');
+      }
+
+      return {
+        absenceDaysUsed: sickLeaveDays,
+        annualVacationTotal: overviewData.totalVacationDays?.toNumber() || 0,
+        annualVacationUsed: overviewData.usedVacationDays?.toNumber() || 0,
+        salary: overviewData.salary?.toNumber() || null,
+        totalAssignedAssets: assetCount,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch employee overview for employeeId: ${employeeId}`,
+        error,
+      );
+
+      // Re-throw NotFoundException as-is
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      // Re-throw other errors with more context
+      throw error;
+    }
   }
 }

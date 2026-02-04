@@ -166,4 +166,38 @@ export class UserRepository {
       },
     });
   }
+
+  /**
+   * Get employee overview data (vacation days and salary)
+   */
+  async findEmployeeOverviewData(employeeId: string) {
+    return this.prisma.employee.findFirst({
+      where: {
+        id: employeeId,
+        status: 'ACTIVE',
+      },
+      select: {
+        totalVacationDays: true,
+        usedVacationDays: true,
+        salary: true,
+      },
+    });
+  }
+
+  /**
+   * Sum total sick leave days used by employee
+   */
+  async sumSickLeaveDays(employeeId: string): Promise<number> {
+    const result = await this.prisma.sickLeave.aggregate({
+      where: {
+        employeeId,
+        status: 'APPROVED',
+      },
+      _sum: {
+        numberOfDays: true,
+      },
+    });
+
+    return result._sum.numberOfDays || 0;
+  }
 }
