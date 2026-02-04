@@ -1,5 +1,4 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { EmployeeAssetResponseDto } from './dto/employee-asset-response.dto';
 import { TeamMemberResponseDto } from './dto/team-member-response.dto';
@@ -12,13 +11,14 @@ import {
   PaginatedResult,
   PaginationUtil,
 } from '../../common/utils/pagination.util';
+import { UserRepository } from './repositories/user.repository';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
 
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly userRepository: UserRepository,
     private readonly i18n: I18nService,
   ) {}
 
@@ -56,44 +56,7 @@ export class UserService {
    * Fetch employee with all required relations
    */
   private async fetchEmployeeWithRelations(employeeId: string) {
-    return this.prisma.employee.findUnique({
-      where: { id: employeeId, status: 'ACTIVE' },
-      select: {
-        id: true,
-        name: true,
-        civilId: true,
-        civilIdExpiryDate: true,
-        passportNo: true,
-        passportExpiryDate: true,
-        nationality: true,
-        jobTitle: true,
-        startDate: true,
-        type: true,
-        salary: true,
-        iban: true,
-        personalEmail: true,
-        companyEmail: true,
-        status: true,
-        totalVacationDays: true,
-        usedVacationDays: true,
-        branch: {
-          select: {
-            id: true,
-            translations: {
-              select: {
-                name: true,
-              },
-            },
-            department: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    return this.userRepository.findEmployeeWithRelations(employeeId);
   }
 
   async updateProfile(
@@ -103,9 +66,7 @@ export class UserService {
   ): Promise<{ message: string }> {
     try {
       // Check if user exists
-      const existingUser = await this.prisma.user.findUnique({
-        where: { id: userId },
-      });
+      const existingUser = await this.userRepository.findUserById(userId);
 
       if (!existingUser) {
         throw TranslatedException.notFound('user.profile.notFound');
@@ -122,10 +83,7 @@ export class UserService {
       }
 
       // Update user
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: dataToUpdate,
-      });
+      await this.userRepository.updateUser(userId, dataToUpdate);
 
       return {
         message: await this.i18n.translate('user.profile.updateSuccess', {
@@ -154,12 +112,7 @@ export class UserService {
       const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
 
       // Verify employee exists and is active
-      const employee = await this.prisma.employee.findFirst({
-        where: {
-          id: employeeId,
-          status: 'ACTIVE',
-        },
-      });
+      const employee = await this.userRepository.findEmployeeById(employeeId);
 
       if (!employee) {
         throw new NotFoundException('Employee not found');
@@ -167,28 +120,12 @@ export class UserService {
 
       // Get employee assets with pagination and total count
       const [employeeAssets, total] = await Promise.all([
-        this.prisma.employeeAsset.findMany({
-          where: {
-            employeeId,
-          },
-          include: {
-            asset: {
-              include: {
-                categories: true,
-              },
-            },
-          },
-          orderBy: {
-            assignedAt: 'desc',
-          },
+        this.userRepository.findEmployeeAssets(
+          employeeId,
           skip,
-          take: normalizedLimit,
-        }),
-        this.prisma.employeeAsset.count({
-          where: {
-            employeeId,
-          },
-        }),
+          normalizedLimit,
+        ),
+        this.userRepository.countEmployeeAssets(employeeId),
       ]);
 
       // Map to response DTOs
@@ -240,10 +177,7 @@ export class UserService {
     const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
 
     // Resolve current employee's branch
-    const current = await this.prisma.employee.findFirst({
-      where: { id: employeeId, status: 'ACTIVE' },
-      select: { branchId: true },
-    });
+    const current = await this.userRepository.findEmployeeBranchId(employeeId);
 
     if (!current?.branchId) {
       // No branch assigned — return empty page
@@ -255,26 +189,14 @@ export class UserService {
       );
     }
 
-    const where = {
-      branchId: current.branchId,
-      status: 'ACTIVE' as const,
-      id: { not: employeeId },
-    };
-
     const [members, total] = await Promise.all([
-      this.prisma.employee.findMany({
-        where,
-        select: {
-          id: true,
-          name: true,
-          jobTitle: true,
-          companyEmail: true,
-        },
-        orderBy: { name: 'asc' },
+      this.userRepository.findTeamMembers(
+        current.branchId,
+        employeeId,
         skip,
-        take: normalizedLimit,
-      }),
-      this.prisma.employee.count({ where }),
+        normalizedLimit,
+      ),
+      this.userRepository.countTeamMembers(current.branchId, employeeId),
     ]);
 
     return PaginationUtil.createPaginatedResult(
