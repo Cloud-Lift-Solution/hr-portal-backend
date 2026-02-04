@@ -22,6 +22,7 @@ export class AuthRepository {
         companyEmail: true,
         jobTitle: true,
         password: true,
+        faceLoginId: true,
         status: true,
         branch: {
           select: {
@@ -74,6 +75,9 @@ export class AuthRepository {
         name: true,
         companyEmail: true,
         jobTitle: true,
+        password: true,
+        faceLoginId: true,
+        status: true,
         branch: {
           select: {
             id: true,
@@ -108,6 +112,64 @@ export class AuthRepository {
           },
         },
       },
+    });
+  }
+
+  async findActiveByFaceLoginId(hashedFaceLoginId: string) {
+    return this.prisma.employee.findFirst({
+      where: {
+        faceLoginId: hashedFaceLoginId,
+        status: EmployeeStatus.ACTIVE,
+      },
+      select: {
+        id: true,
+        name: true,
+        companyEmail: true,
+        jobTitle: true,
+        password: true,
+        faceLoginId: true,
+        status: true,
+        branch: {
+          select: {
+            id: true,
+            latitude: true,
+            longitude: true,
+            translations: {
+              select: {
+                name: true,
+                language: {
+                  select: {
+                    code: true,
+                  },
+                },
+              },
+            },
+            workShifts: {
+              select: {
+                workShift: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async updateFaceLoginId(employeeId: string, faceLoginId: string) {
+    return this.prisma.employee.update({
+      where: { id: employeeId },
+      data: { faceLoginId },
     });
   }
 }

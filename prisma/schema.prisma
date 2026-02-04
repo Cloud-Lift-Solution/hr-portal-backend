@@ -223,6 +223,7 @@ model Employee {
   personalEmail      String?
   companyEmail       String?        @unique
   password           String? // Hashed password for employee login
+  faceLoginId        String? // Face-login identifier set on first face registration
   status             EmployeeStatus @default(ACTIVE)
 
   // Vacation balance tracking

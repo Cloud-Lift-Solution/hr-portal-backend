@@ -1,5 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
+import { createHash } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { AuthRepository } from './repositories/auth.repository';
 import { JwtTokenService } from '../jwt/jwt-token.service';
@@ -16,33 +17,67 @@ export class AuthService {
 
   /**
    * Employee login
-   * Validates credentials and returns JWT tokens
+   * Supports three modes:
+   *  1. Normal login          – email + password
+   *  2. Face registration     – email + password + faceLoginId  (first time, saves faceLoginId)
+   *  3. Face login            – faceLoginId only                (subsequent logins, no email/password)
    */
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
-    const { companyEmail, password } = loginDto;
+    const { companyEmail, password, faceLoginId } = loginDto;
 
-    // Find employee by company email
-    const employee =
-      await this.authRepository.findActiveByCompanyEmail(companyEmail);
-
-    // Check if employee exists and is active
-    if (!employee) {
-      throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
+    if (!companyEmail && !faceLoginId) {
+      throw new BadRequestException(this.i18n.t('auth.emailOrFaceLoginRequired'));
     }
 
-    // Check if employee has a password set
-    if (!employee.password) {
-      throw new UnauthorizedException(this.i18n.t('auth.accountNotActivated'));
-    }
+    // ── resolve employee ────────────────────────────────────────
+    let employee: Awaited<ReturnType<typeof this.authRepository.findActiveByCompanyEmail>>;
 
-    // Validate password
-    const isPasswordValid = await this.comparePasswords(
-      password,
-      employee.password,
-    );
+    if (!companyEmail) {
+      // ── Mode 3: faceLoginId-only login ─────────────────────────
+      employee = await this.authRepository.findActiveByFaceLoginId(
+        this.hashFaceLoginId(faceLoginId!),
+      );
+      if (!employee) {
+        throw new UnauthorizedException(this.i18n.t('auth.invalidFaceLogin'));
+      }
+    } else {
+      employee = await this.authRepository.findActiveByCompanyEmail(companyEmail);
+      if (!employee) {
+        throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
+      }
 
-    if (!isPasswordValid) {
-      throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
+      if (faceLoginId && employee.faceLoginId) {
+        // ── Mode 3 variant: email sent but face already registered
+        if (this.hashFaceLoginId(faceLoginId) !== employee.faceLoginId) {
+          throw new UnauthorizedException(this.i18n.t('auth.invalidFaceLogin'));
+        }
+      } else {
+        // ── Mode 1 or 2: password is required ──────────────────
+        if (!employee.password) {
+          throw new UnauthorizedException(this.i18n.t('auth.accountNotActivated'));
+        }
+
+        if (!password) {
+          throw new BadRequestException(this.i18n.t('auth.passwordRequired'));
+        }
+
+        const isPasswordValid = await this.comparePasswords(
+          password,
+          employee.password,
+        );
+
+        if (!isPasswordValid) {
+          throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
+        }
+
+        // ── Mode 2: first-time face registration — hash & persist
+        if (faceLoginId) {
+          await this.authRepository.updateFaceLoginId(
+            employee.id,
+            this.hashFaceLoginId(faceLoginId),
+          );
+        }
+      }
     }
 
     // Prepare user data for JWT token
@@ -108,6 +143,16 @@ export class AuthService {
     hashedPassword: string,
   ): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  /**
+   * Deterministic SHA-256 hash for faceLoginId.
+   * Unlike bcrypt, the same input always produces the same output,
+   * which allows a DB lookup by the hash while still protecting the
+   * plain-text value in case of a DB breach.
+   */
+  private hashFaceLoginId(value: string): string {
+    return createHash('sha256').update(value).digest('hex');
   }
 
   /**
