@@ -113,7 +113,7 @@ export class CreateEmployeeDto {
 
   @IsUUID()
   @IsOptional()
-  departmentId?: string;
+  branchId?: string;
 
   @IsArray()
   @IsOptional()

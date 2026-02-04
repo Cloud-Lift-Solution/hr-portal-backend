@@ -87,7 +87,7 @@ export class UpdateEmployeeDto {
 
   @IsUUID()
   @IsOptional()
-  departmentId?: string | null;
+  branchId?: string | null;
 
   @IsArray()
   @IsOptional()

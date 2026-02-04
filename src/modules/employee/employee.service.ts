@@ -108,7 +108,7 @@ export class EmployeeService {
       iban: createEmployeeDto.iban,
       personalEmail: createEmployeeDto.personalEmail,
       companyEmail: createEmployeeDto.companyEmail,
-      departmentId: createEmployeeDto.departmentId,
+      branchId: createEmployeeDto.branchId,
       assetIds: createEmployeeDto.assetIds,
       attachments: createEmployeeDto.attachments,
     });

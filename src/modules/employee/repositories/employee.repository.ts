@@ -10,10 +10,20 @@ export class EmployeeRepository {
    * Base include for employee relations
    */
   private readonly includeRelations = {
-    department: {
+    branch: {
       select: {
         id: true,
-        name: true,
+        translations: {
+          select: {
+            name: true,
+          },
+        },
+        department: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     },
     assets: {
@@ -153,7 +163,7 @@ export class EmployeeRepository {
     iban?: string;
     personalEmail?: string;
     companyEmail?: string;
-    departmentId?: string;
+    branchId?: string;
     assetIds?: string[];
     attachments?: Array<{
       url: string;
@@ -177,7 +187,7 @@ export class EmployeeRepository {
         iban: data.iban,
         personalEmail: data.personalEmail,
         companyEmail: data.companyEmail,
-        branchId: data.departmentId,
+        branchId: data.branchId,
         assets: data.assetIds?.length
           ? {
               create: data.assetIds.map((assetId) => ({
@@ -219,7 +229,7 @@ export class EmployeeRepository {
       iban: string | null;
       personalEmail: string | null;
       companyEmail: string | null;
-      departmentId: string | null;
+      branchId: string | null;
       assetIds?: string[];
       attachments?: Array<{
         url: string;
