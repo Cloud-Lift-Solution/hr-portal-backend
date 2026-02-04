@@ -77,4 +77,18 @@ export class PaginationUtil {
     }
     return Math.min(limit, maxLimit);
   }
+
+  /**
+   * Parse pagination query parameters from strings to numbers
+   * Handles empty strings and invalid values gracefully
+   */
+  static parseParams(
+    pageParam?: string,
+    limitParam?: string,
+  ): { page?: number; limit?: number } {
+    return {
+      page: pageParam ? parseInt(pageParam, 10) : undefined,
+      limit: limitParam ? parseInt(limitParam, 10) : undefined,
+    };
+  }
 }

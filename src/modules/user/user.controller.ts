@@ -13,7 +13,10 @@ import { UserService } from './user.service';
 import { UserProfileResponseDto, EmployeeAssetResponseDto } from './dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { PaginatedResult } from '../../common/utils/pagination.util';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -47,10 +50,7 @@ export class UserController {
     @Query('page') pageParam?: string,
     @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<EmployeeAssetResponseDto>> {
-    // Parse pagination parameters safely
-    const page = pageParam ? parseInt(pageParam, 10) : undefined;
-    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.userService.getMyAssets(user.id, page, limit);
   }
 }

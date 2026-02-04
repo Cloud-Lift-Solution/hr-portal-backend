@@ -21,7 +21,10 @@ import {
   BranchDetailResponseDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
-import { PaginatedResult } from '../../common/utils/pagination.util';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @ApiTags('Branches')
 // @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
@@ -42,10 +45,7 @@ export class BranchController {
     @Query('page') pageParam?: string,
     @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<BranchResponseDto>> {
-    // Parse pagination parameters safely
-    const page = pageParam ? parseInt(pageParam, 10) : undefined;
-    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.branchService.findAll(language, page, limit);
   }
 
@@ -71,10 +71,7 @@ export class BranchController {
     @Query('page') pageParam?: string,
     @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<BranchResponseDto>> {
-    // Parse pagination parameters safely
-    const page = pageParam ? parseInt(pageParam, 10) : undefined;
-    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.branchService.findByDepartmentId(departmentId, language, page, limit);
   }
 

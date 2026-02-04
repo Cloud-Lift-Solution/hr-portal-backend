@@ -44,10 +44,7 @@ export class DepartmentController {
     @Query('page') pageParam?: string,
     @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<DepartmentResponseDto>> {
-    // Parse pagination parameters safely
-    const page = pageParam ? parseInt(pageParam, 10) : undefined;
-    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.departmentService.findAll(search, page, limit);
   }
 

@@ -22,7 +22,10 @@ import {
   EmployeeResponseDto,
 } from './dto';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
-import { PaginatedResult } from '../../common/utils/pagination.util';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @ApiTags('Employees')
 // @ApiBearerAuth('JWT-auth') // Commented out for testing - Remove comment to enable JWT auth
@@ -50,10 +53,7 @@ export class EmployeeController {
     @Query('page') pageParam?: string,
     @Query('limit') limitParam?: string,
   ): Promise<PaginatedResult<EmployeeResponseDto>> {
-    // Parse pagination parameters safely
-    const page = pageParam ? parseInt(pageParam, 10) : undefined;
-    const limit = limitParam ? parseInt(limitParam, 10) : undefined;
-
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.employeeService.findAll(
       {
         search,
