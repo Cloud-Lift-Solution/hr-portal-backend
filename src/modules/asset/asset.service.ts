@@ -9,6 +9,10 @@ import { AssetType } from '@prisma/client';
 import { AssetRepository } from './repositories/asset.repository';
 import { CreateAssetDto, UpdateAssetDto, AssetResponseDto } from './dto';
 import { TranslatedException } from '../../common/exceptions/business.exception';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @Injectable()
 export class AssetService {
@@ -23,26 +27,29 @@ export class AssetService {
    * Get all assets with pagination
    */
   async findAll(
-    page: number = 1,
-    limit: number = 10,
-  ): Promise<{
-    data: AssetResponseDto[];
-    total: number;
-    page: number;
-    limit: number;
-  }> {
-    const skip = (page - 1) * limit;
+    page?: number,
+    limit?: number,
+  ): Promise<PaginatedResult<AssetResponseDto>> {
+    // Normalize pagination parameters
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+
+    // Calculate skip
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Get assets and total count
     const [assets, total] = await Promise.all([
-      this.assetRepository.findAll(skip, limit),
+      this.assetRepository.findAll(skip, normalizedLimit),
       this.assetRepository.count(),
     ]);
 
-    return {
-      data: assets as AssetResponseDto[],
+    // Return paginated result
+    return PaginationUtil.createPaginatedResult(
+      assets as AssetResponseDto[],
+      normalizedPage,
+      normalizedLimit,
       total,
-      page,
-      limit,
-    };
+    );
   }
 
   /**

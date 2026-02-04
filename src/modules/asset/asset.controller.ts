@@ -11,14 +11,16 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
-  ParseIntPipe,
-  DefaultValuePipe,
 } from '@nestjs/common';
 import { ApiTags /* ApiBearerAuth */ } from '@nestjs/swagger';
 import { AssetService } from './asset.service';
 import { CreateAssetDto, UpdateAssetDto, AssetResponseDto } from './dto';
 // import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AcceptLanguage } from '../../common/decorators/accept-language.decorator';
+import {
+  PaginatedResult,
+  PaginationUtil,
+} from '../../common/utils/pagination.util';
 
 @ApiTags('Assets')
 // @ApiBearerAuth('JWT-auth')
@@ -35,14 +37,10 @@ export class AssetController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-  ): Promise<{
-    data: AssetResponseDto[];
-    total: number;
-    page: number;
-    limit: number;
-  }> {
+    @Query('page') pageParam?: string,
+    @Query('limit') limitParam?: string,
+  ): Promise<PaginatedResult<AssetResponseDto>> {
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.assetService.findAll(page, limit);
   }
 
