@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { UserProfileResponseDto, EmployeeAssetResponseDto } from './dto';
+import {
+  UserProfileResponseDto,
+  EmployeeAssetResponseDto,
+  TeamMemberResponseDto,
+} from './dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import {
@@ -52,5 +56,22 @@ export class UserController {
   ): Promise<PaginatedResult<EmployeeAssetResponseDto>> {
     const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
     return await this.userService.getMyAssets(user.id, page, limit);
+  }
+
+  /**
+   * Get team members — other active employees in the same branch
+   * GET /user/team?page=1&limit=20
+   */
+  @Get('team')
+  @HttpCode(HttpStatus.OK)
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  async getTeamMembers(
+    @CurrentUser() user: { id: string; email: string },
+    @Query('page') pageParam?: string,
+    @Query('limit') limitParam?: string,
+  ): Promise<PaginatedResult<TeamMemberResponseDto>> {
+    const { page, limit } = PaginationUtil.parseParams(pageParam, limitParam);
+    return await this.userService.getTeamMembers(user.id, page, limit);
   }
 }

@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { EmployeeAssetResponseDto } from './dto/employee-asset-response.dto';
+import { TeamMemberResponseDto } from './dto/team-member-response.dto';
 import { UserProfileMapper } from './mappers/get-user-profile.mapper';
 import { TranslatedException } from 'src/common/exceptions/business.exception';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -224,5 +225,63 @@ export class UserService {
       // Re-throw other errors with more context
       throw error;
     }
+  }
+
+  /**
+   * Get team members — other active employees sharing the same branch
+   */
+  async getTeamMembers(
+    employeeId: string,
+    page?: number,
+    limit?: number,
+  ): Promise<PaginatedResult<TeamMemberResponseDto>> {
+    const normalizedPage = PaginationUtil.normalizePage(page);
+    const normalizedLimit = PaginationUtil.normalizeLimit(limit);
+    const skip = PaginationUtil.getSkip(normalizedPage, normalizedLimit);
+
+    // Resolve current employee's branch
+    const current = await this.prisma.employee.findFirst({
+      where: { id: employeeId, status: 'ACTIVE' },
+      select: { branchId: true },
+    });
+
+    if (!current?.branchId) {
+      // No branch assigned — return empty page
+      return PaginationUtil.createPaginatedResult(
+        [],
+        normalizedPage,
+        normalizedLimit,
+        0,
+      );
+    }
+
+    const where = {
+      branchId: current.branchId,
+      status: 'ACTIVE' as const,
+      id: { not: employeeId },
+    };
+
+    const [members, total] = await Promise.all([
+      this.prisma.employee.findMany({
+        where,
+        select: {
+          id: true,
+          name: true,
+          jobTitle: true,
+          companyEmail: true,
+        },
+        orderBy: { name: 'asc' },
+        skip,
+        take: normalizedLimit,
+      }),
+      this.prisma.employee.count({ where }),
+    ]);
+
+    return PaginationUtil.createPaginatedResult(
+      members,
+      normalizedPage,
+      normalizedLimit,
+      total,
+    );
   }
 }
