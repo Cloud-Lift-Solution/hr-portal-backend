@@ -246,6 +246,7 @@ model Employee {
   // Salary request relations
   salaryAdvanceRequests     SalaryAdvanceRequest[]
   salaryCertificateRequests SalaryCertificateRequest[]
+  remoteWorkRequests        RemoteWorkRequest[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -424,6 +425,12 @@ enum SalaryCertificateStatus {
   REJECTED
 }
 
+enum RemoteWorkStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // Salary Advance Request model
 model SalaryAdvanceRequest {
   id String @id @default(uuid())
@@ -462,6 +469,26 @@ model SalaryCertificateRequest {
 
   @@index([employeeId])
   @@index([status])
+}
+
+// Remote Work Request model
+model RemoteWorkRequest {
+  id String @id @default(uuid())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  requestDate DateTime @db.Date // The date employee wants to work remotely
+  description String?  @db.VarChar(500)
+
+  status RemoteWorkStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
+  @@index([requestDate])
 }
 
 model Attendance {

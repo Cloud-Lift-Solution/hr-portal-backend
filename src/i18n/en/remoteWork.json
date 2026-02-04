@@ -1,0 +1,11 @@
+{
+  "notFound": "Remote work request not found",
+  "requestAlreadyPending": "A pending remote work request already exists for this date",
+  "alreadyProcessed": "This remote work request has already been processed",
+  "employeeNotFoundOrInactive": "Employee not found or inactive",
+  "created": "Remote work request created successfully",
+  "updated": "Remote work request updated successfully",
+  "statusUpdated": "Remote work request status updated successfully",
+  "approved": "Remote work request approved",
+  "rejected": "Remote work request rejected"
+}

@@ -13,6 +13,8 @@ import { SalaryAdvanceRequestController } from './salary-advance-request/salary-
 import { SalaryAdvanceRequestService } from './salary-advance-request/salary-advance-request.service';
 import { SalaryCertificateRequestController } from './salary-certificate-request/salary-certificate-request.controller';
 import { SalaryCertificateRequestService } from './salary-certificate-request/salary-certificate-request.service';
+import { RemoteWorkRequestController } from './remote-work-request/remote-work-request.controller';
+import { RemoteWorkRequestService } from './remote-work-request/remote-work-request.service';
 import { UnifiedRequestsController } from './unified-requests.controller';
 import { UnifiedRequestsService } from './unified-requests.service';
 
@@ -26,6 +28,7 @@ import { UnifiedRequestsService } from './unified-requests.service';
     VacationCancellationRequestController,
     SalaryAdvanceRequestController,
     SalaryCertificateRequestController,
+    RemoteWorkRequestController,
   ],
   providers: [
     UnifiedRequestsService,
@@ -35,6 +38,7 @@ import { UnifiedRequestsService } from './unified-requests.service';
     VacationCancellationRequestService,
     SalaryAdvanceRequestService,
     SalaryCertificateRequestService,
+    RemoteWorkRequestService,
   ],
   exports: [
     UnifiedRequestsService,
@@ -44,6 +48,7 @@ import { UnifiedRequestsService } from './unified-requests.service';
     VacationCancellationRequestService,
     SalaryAdvanceRequestService,
     SalaryCertificateRequestService,
+    RemoteWorkRequestService,
   ],
 })
 export class RequestsModule {}
