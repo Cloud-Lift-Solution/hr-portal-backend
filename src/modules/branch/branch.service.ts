@@ -117,13 +117,13 @@ export class BranchService {
     createBranchDto: CreateBranchDto,
     lang: string,
   ): Promise<BranchDetailResponseDto> {
-    // Create branch with translations
+    // Create branch with translations and work shifts
     const branch = await this.branchRepository.create(
       createBranchDto.departmentId,
       createBranchDto.openAnyTime || false,
       createBranchDto.nameAr,
       createBranchDto.nameEn,
-      createBranchDto.workShiftId,
+      createBranchDto.workShiftIds,
     );
 
     return this.mapToDetailResponse(branch);
@@ -144,7 +144,7 @@ export class BranchService {
     const updatedBranch = await this.branchRepository.update(id, {
       departmentId: updateBranchDto.departmentId,
       openAnyTime: updateBranchDto.openAnyTime,
-      workShiftId: updateBranchDto.workShiftId,
+      workShiftIds: updateBranchDto.workShiftIds,
       nameAr: updateBranchDto.nameAr,
       nameEn: updateBranchDto.nameEn,
     });
@@ -191,8 +191,10 @@ export class BranchService {
       openAnyTime: branch.openAnyTime,
       departmentId: branch.departmentId,
       departmentName: branch.department?.name || 'N/A',
-      workShiftId: branch.workShiftId || undefined,
-      workShiftName: branch.workShift?.name || undefined,
+      workShifts: (branch.workShifts || []).map((bws: any) => ({
+        id: bws.workShift.id,
+        name: bws.workShift.name,
+      })),
       createdAt: branch.createdAt,
       updatedAt: branch.updatedAt,
     };
@@ -216,8 +218,10 @@ export class BranchService {
       openAnyTime: branch.openAnyTime,
       departmentId: branch.departmentId,
       departmentName: branch.department?.name || 'N/A',
-      workShiftId: branch.workShiftId || undefined,
-      workShiftName: branch.workShift?.name || undefined,
+      workShifts: (branch.workShifts || []).map((bws: any) => ({
+        id: bws.workShift.id,
+        name: bws.workShift.name,
+      })),
       createdAt: branch.createdAt,
       updatedAt: branch.updatedAt,
     };

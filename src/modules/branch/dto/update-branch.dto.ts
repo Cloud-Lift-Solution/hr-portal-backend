@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsBoolean, IsUUID } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsUUID, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class UpdateBranchDto {
@@ -19,7 +19,8 @@ export class UpdateBranchDto {
   @IsOptional()
   departmentId?: string;
 
-  @IsUUID()
+  @IsArray()
   @IsOptional()
-  workShiftId?: string;
+  @IsUUID('4', { each: true })
+  workShiftIds?: string[]; // Replaces all current work shifts with this list
 }

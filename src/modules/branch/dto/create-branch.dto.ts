@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean, IsOptional, IsUUID, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateBranchDto {
@@ -19,7 +19,8 @@ export class CreateBranchDto {
   @IsNotEmpty()
   departmentId: string; // Department ID this branch belongs to
 
-  @IsUUID()
+  @IsArray()
   @IsOptional()
-  workShiftId?: string; // Work shift ID for this branch
+  @IsUUID('4', { each: true })
+  workShiftIds?: string[]; // Work shift IDs assigned to this branch
 }

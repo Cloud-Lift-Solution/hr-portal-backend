@@ -1,11 +1,15 @@
+export class WorkShiftDto {
+  id: string;
+  name: string;
+}
+
 export class BranchResponseDto {
   id: string;
   name: string; // Name in requested language
   openAnyTime: boolean;
   departmentId: string;
   departmentName: string;
-  workShiftId?: string;
-  workShiftName?: string;
+  workShifts: WorkShiftDto[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,8 +21,7 @@ export class BranchDetailResponseDto {
   openAnyTime: boolean;
   departmentId: string;
   departmentName: string;
-  workShiftId?: string;
-  workShiftName?: string;
+  workShifts: WorkShiftDto[];
   createdAt: Date;
   updatedAt: Date;
 }

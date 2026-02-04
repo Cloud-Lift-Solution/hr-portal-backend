@@ -89,7 +89,6 @@ async function main() {
       data: {
         departmentId: department.id,
         openAnyTime: true,
-        workShiftId: workShift.id,
         translations: {
           create: [
             {
@@ -101,6 +100,9 @@ async function main() {
               name: 'المكتب الرئيسي',
             },
           ],
+        },
+        workShifts: {
+          create: [{ workShiftId: workShift.id }],
         },
       },
       include: {

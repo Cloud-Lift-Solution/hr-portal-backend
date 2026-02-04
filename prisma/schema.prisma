@@ -100,9 +100,7 @@ model Branch {
   departmentId String
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
 
-  workShiftId String?
-  workShift   WorkShift? @relation(fields: [workShiftId], references: [id], onDelete: SetNull)
-
+  workShifts   BranchWorkShift[]
   translations BranchTranslation[]
   employees    Employee[]
 
@@ -110,6 +108,19 @@ model Branch {
   updatedAt DateTime @updatedAt
 
   @@index([departmentId])
+}
+
+model BranchWorkShift {
+  id String @id @default(uuid())
+
+  branchId    String
+  branch      Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  workShiftId String
+  workShift   WorkShift @relation(fields: [workShiftId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, workShiftId])
+  @@index([branchId])
   @@index([workShiftId])
 }
 
@@ -514,7 +525,7 @@ model WorkShift {
   clockOut DateTime @db.Time(0) // Clock out time (24-hour format)
 
   // Relations
-  branches Branch[]
+  branchWorkShifts BranchWorkShift[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
