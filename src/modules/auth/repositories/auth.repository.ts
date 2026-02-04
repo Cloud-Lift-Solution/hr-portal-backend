@@ -26,9 +26,26 @@ export class AuthRepository {
         branch: {
           select: {
             id: true,
+            latitude: true,
+            longitude: true,
             translations: {
               select: {
                 name: true,
+                language: {
+                  select: {
+                    code: true,
+                  },
+                },
+              },
+            },
+            workShifts: {
+              select: {
+                workShift: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
             department: {
@@ -60,9 +77,26 @@ export class AuthRepository {
         branch: {
           select: {
             id: true,
+            latitude: true,
+            longitude: true,
             translations: {
               select: {
                 name: true,
+                language: {
+                  select: {
+                    code: true,
+                  },
+                },
+              },
+            },
+            workShifts: {
+              select: {
+                workShift: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
             department: {

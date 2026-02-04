@@ -71,6 +71,19 @@ export class AuthService {
             name: employee.branch.department.name,
           }
         : undefined,
+      branch: employee.branch
+        ? {
+            id: employee.branch.id,
+            nameEn: employee.branch.translations.find((t) => t.language.code === 'en')?.name || '',
+            nameAr: employee.branch.translations.find((t) => t.language.code === 'ar')?.name || '',
+            latitude: employee.branch.latitude,
+            longitude: employee.branch.longitude,
+            workShifts: employee.branch.workShifts.map((bws) => ({
+              id: bws.workShift.id,
+              name: bws.workShift.name,
+            })),
+          }
+        : undefined,
     };
 
     return {
@@ -116,6 +129,19 @@ export class AuthService {
         ? {
             id: employee.branch.department.id,
             name: employee.branch.department.name,
+          }
+        : undefined,
+      branch: employee.branch
+        ? {
+            id: employee.branch.id,
+            nameEn: employee.branch.translations.find((t) => t.language.code === 'en')?.name || '',
+            nameAr: employee.branch.translations.find((t) => t.language.code === 'ar')?.name || '',
+            latitude: employee.branch.latitude,
+            longitude: employee.branch.longitude,
+            workShifts: employee.branch.workShifts.map((bws) => ({
+              id: bws.workShift.id,
+              name: bws.workShift.name,
+            })),
           }
         : undefined,
     };
