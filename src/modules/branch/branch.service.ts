@@ -124,6 +124,8 @@ export class BranchService {
       createBranchDto.nameAr,
       createBranchDto.nameEn,
       createBranchDto.workShiftIds,
+      createBranchDto.latitude,
+      createBranchDto.longitude,
     );
 
     return this.mapToDetailResponse(branch);
@@ -144,6 +146,8 @@ export class BranchService {
     const updatedBranch = await this.branchRepository.update(id, {
       departmentId: updateBranchDto.departmentId,
       openAnyTime: updateBranchDto.openAnyTime,
+      latitude: updateBranchDto.latitude,
+      longitude: updateBranchDto.longitude,
       workShiftIds: updateBranchDto.workShiftIds,
       nameAr: updateBranchDto.nameAr,
       nameEn: updateBranchDto.nameEn,
@@ -189,6 +193,8 @@ export class BranchService {
       id: branch.id,
       name: translation?.name || branch.translations[0]?.name || 'N/A',
       openAnyTime: branch.openAnyTime,
+      latitude: branch.latitude,
+      longitude: branch.longitude,
       departmentId: branch.departmentId,
       departmentName: branch.department?.name || 'N/A',
       workShifts: (branch.workShifts || []).map((bws: any) => ({
@@ -216,6 +222,8 @@ export class BranchService {
       nameEn: enTranslation?.name || '',
       nameAr: arTranslation?.name || '',
       openAnyTime: branch.openAnyTime,
+      latitude: branch.latitude,
+      longitude: branch.longitude,
       departmentId: branch.departmentId,
       departmentName: branch.department?.name || 'N/A',
       workShifts: (branch.workShifts || []).map((bws: any) => ({

@@ -7,6 +7,8 @@ export class BranchResponseDto {
   id: string;
   name: string; // Name in requested language
   openAnyTime: boolean;
+  latitude: number | null;
+  longitude: number | null;
   departmentId: string;
   departmentName: string;
   workShifts: WorkShiftDto[];
@@ -19,6 +21,8 @@ export class BranchDetailResponseDto {
   nameAr: string;
   nameEn: string;
   openAnyTime: boolean;
+  latitude: number | null;
+  longitude: number | null;
   departmentId: string;
   departmentName: string;
   workShifts: WorkShiftDto[];

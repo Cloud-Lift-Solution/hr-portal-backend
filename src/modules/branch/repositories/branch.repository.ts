@@ -66,6 +66,8 @@ export class BranchRepository {
     nameAr: string,
     nameEn: string,
     workShiftIds?: string[],
+    latitude?: number,
+    longitude?: number,
   ) {
     // Resolve language IDs
     const languages = await this.prisma.language.findMany({
@@ -83,6 +85,8 @@ export class BranchRepository {
       data: {
         departmentId,
         openAnyTime,
+        latitude,
+        longitude,
         translations: {
           create: [
             { languageId: enLang.id, name: nameEn },
@@ -104,6 +108,8 @@ export class BranchRepository {
     data: {
       departmentId?: string;
       openAnyTime?: boolean;
+      latitude?: number;
+      longitude?: number;
       workShiftIds?: string[];
       nameAr?: string;
       nameEn?: string;

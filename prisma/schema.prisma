@@ -95,6 +95,8 @@ model Language {
 model Branch {
   id          String  @id @default(uuid())
   openAnyTime Boolean @default(false) // Branch open any time flag
+  latitude    Float?
+  longitude   Float?
 
   // Relations
   departmentId String

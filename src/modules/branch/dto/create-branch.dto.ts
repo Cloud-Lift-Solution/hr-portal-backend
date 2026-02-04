@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, IsUUID, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean, IsOptional, IsUUID, IsArray, IsNumber } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateBranchDto {
@@ -14,6 +14,14 @@ export class CreateBranchDto {
   @IsOptional()
   @Transform(({ value }) => value === true || value === 'true')
   openAnyTime?: boolean; // Branch open any time flag
+
+  @IsNumber()
+  @IsOptional()
+  latitude?: number;
+
+  @IsNumber()
+  @IsOptional()
+  longitude?: number;
 
   @IsUUID()
   @IsNotEmpty()
