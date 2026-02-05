@@ -22,7 +22,7 @@ export class AuthRepository {
         companyEmail: true,
         jobTitle: true,
         password: true,
-        faceLoginId: true,
+        faceLoginEnabled: true,
         status: true,
         branch: {
           select: {
@@ -76,7 +76,7 @@ export class AuthRepository {
         companyEmail: true,
         jobTitle: true,
         password: true,
-        faceLoginId: true,
+        faceLoginEnabled: true,
         status: true,
         branch: {
           select: {
@@ -115,61 +115,13 @@ export class AuthRepository {
     });
   }
 
-  async findActiveByFaceLoginId(hashedFaceLoginId: string) {
-    return this.prisma.employee.findFirst({
-      where: {
-        faceLoginId: hashedFaceLoginId,
-        status: EmployeeStatus.ACTIVE,
-      },
-      select: {
-        id: true,
-        name: true,
-        companyEmail: true,
-        jobTitle: true,
-        password: true,
-        faceLoginId: true,
-        status: true,
-        branch: {
-          select: {
-            id: true,
-            latitude: true,
-            longitude: true,
-            translations: {
-              select: {
-                name: true,
-                language: {
-                  select: {
-                    code: true,
-                  },
-                },
-              },
-            },
-            workShifts: {
-              select: {
-                workShift: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-            department: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
-  async updateFaceLoginId(employeeId: string, faceLoginId: string) {
+  /**
+   * Update face login enabled status
+   */
+  async updateFaceLoginEnabled(employeeId: string, enabled: boolean) {
     return this.prisma.employee.update({
       where: { id: employeeId },
-      data: { faceLoginId },
+      data: { faceLoginEnabled: enabled },
     });
   }
 }

@@ -1,11 +1,11 @@
-import { IsEmail, IsString, IsOptional, MinLength } from 'class-validator';
+import { IsEmail, IsString, IsOptional, MinLength, IsBoolean, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class LoginDto {
   @ApiProperty({
-    description: 'Employee company email. Required on normal login and first-time face registration; omitted on subsequent face logins.',
+    description: 'Employee company email. Required for normal login; omitted on face login.',
     example: 'john.doe@company.com',
     required: false,
   })
@@ -15,7 +15,7 @@ export class LoginDto {
   companyEmail?: string;
 
   @ApiProperty({
-    description: 'Employee password. Required on normal login and first-time face registration; omitted on subsequent face logins.',
+    description: 'Employee password. Required for normal login; omitted on face login.',
     example: 'SecurePass123',
     minLength: 8,
     required: false,
@@ -28,11 +28,20 @@ export class LoginDto {
   password?: string;
 
   @ApiProperty({
-    description: 'Face-login identifier from the device. Send on first login to register, then on every subsequent login to authenticate without a password.',
+    description: 'Employee ID. Required for face login; omitted on email/password login.',
+    example: 'uuid-of-employee',
     required: false,
   })
   @IsOptional()
-  @IsString()
-  faceLoginId?: string;
+  @IsUUID()
+  employeeId?: string;
 
+  @ApiProperty({
+    description: 'Enable or disable face login for the employee. Send true to enable, false to disable. Only works with email/password login.',
+    example: true,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  enableFaceLogin?: boolean;
 }

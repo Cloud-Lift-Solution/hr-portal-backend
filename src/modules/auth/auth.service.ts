@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
-import { createHash } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { AuthRepository } from './repositories/auth.repository';
 import { JwtTokenService } from '../jwt/jwt-token.service';
@@ -19,64 +18,60 @@ export class AuthService {
    * Employee login
    * Supports three modes:
    *  1. Normal login          – email + password
-   *  2. Face registration     – email + password + faceLoginId  (first time, saves faceLoginId)
-   *  3. Face login            – faceLoginId only                (subsequent logins, no email/password)
+   *  2. Enable face login     – email + password + enableFaceLogin=true
+   *  3. Face login            – employeeId with faceLoginEnabled=true
    */
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
-    const { companyEmail, password, faceLoginId } = loginDto;
+    const { companyEmail, password, employeeId, enableFaceLogin } = loginDto;
 
-    if (!companyEmail && !faceLoginId) {
-      throw new BadRequestException(this.i18n.t('auth.emailOrFaceLoginRequired'));
+    if (!companyEmail && !employeeId) {
+      throw new BadRequestException(this.i18n.t('auth.emailOrEmployeeIdRequired'));
     }
 
     // ── resolve employee ────────────────────────────────────────
     let employee: Awaited<ReturnType<typeof this.authRepository.findActiveByCompanyEmail>>;
 
-    if (!companyEmail) {
-      // ── Mode 3: faceLoginId-only login ─────────────────────────
-      employee = await this.authRepository.findActiveByFaceLoginId(
-        this.hashFaceLoginId(faceLoginId!),
-      );
-      if (!employee) {
-        throw new UnauthorizedException(this.i18n.t('auth.invalidFaceLogin'));
-      }
-    } else {
-      employee = await this.authRepository.findActiveByCompanyEmail(companyEmail);
+    if (employeeId && !companyEmail) {
+      // ── Mode 3: Face login by employeeId ─────────────────────────
+      employee = await this.authRepository.findById(employeeId);
+
       if (!employee) {
         throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
       }
 
-      if (faceLoginId && employee.faceLoginId) {
-        // ── Mode 3 variant: email sent but face already registered
-        if (this.hashFaceLoginId(faceLoginId) !== employee.faceLoginId) {
-          throw new UnauthorizedException(this.i18n.t('auth.invalidFaceLogin'));
-        }
-      } else {
-        // ── Mode 1 or 2: password is required ──────────────────
-        if (!employee.password) {
-          throw new UnauthorizedException(this.i18n.t('auth.accountNotActivated'));
-        }
+      if (!employee.faceLoginEnabled) {
+        throw new UnauthorizedException(this.i18n.t('auth.faceLoginNotEnabled'));
+      }
+    } else {
+      // ── Mode 1 or 2: Email + password login ────────────────────
+      employee = await this.authRepository.findActiveByCompanyEmail(companyEmail!);
 
-        if (!password) {
-          throw new BadRequestException(this.i18n.t('auth.passwordRequired'));
-        }
+      if (!employee) {
+        throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
+      }
 
-        const isPasswordValid = await this.comparePasswords(
-          password,
-          employee.password,
-        );
+      if (!employee.password) {
+        throw new UnauthorizedException(this.i18n.t('auth.accountNotActivated'));
+      }
 
-        if (!isPasswordValid) {
-          throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
-        }
+      if (!password) {
+        throw new BadRequestException(this.i18n.t('auth.passwordRequired'));
+      }
 
-        // ── Mode 2: first-time face registration — hash & persist
-        if (faceLoginId) {
-          await this.authRepository.updateFaceLoginId(
-            employee.id,
-            this.hashFaceLoginId(faceLoginId),
-          );
-        }
+      const isPasswordValid = await this.comparePasswords(
+        password,
+        employee.password,
+      );
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
+      }
+
+      // ── Mode 2: Enable face login if requested ──────────────────
+      if (enableFaceLogin === true && !employee.faceLoginEnabled) {
+        await this.authRepository.updateFaceLoginEnabled(employee.id, true);
+      } else if (enableFaceLogin === false && employee.faceLoginEnabled) {
+        await this.authRepository.updateFaceLoginEnabled(employee.id, false);
       }
     }
 
@@ -145,15 +140,6 @@ export class AuthService {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 
-  /**
-   * Deterministic SHA-256 hash for faceLoginId.
-   * Unlike bcrypt, the same input always produces the same output,
-   * which allows a DB lookup by the hash while still protecting the
-   * plain-text value in case of a DB breach.
-   */
-  private hashFaceLoginId(value: string): string {
-    return createHash('sha256').update(value).digest('hex');
-  }
 
   /**
    * Validate employee exists and is active
