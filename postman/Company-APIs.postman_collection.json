@@ -1,0 +1,358 @@
+{
+	"info": {
+		"_postman_id": "company-collection-001",
+		"name": "Company APIs",
+		"description": "Complete CRUD operations for Companies",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    pm.collectionVariables.set('companyId', response.data.id);",
+							"    pm.environment.set('companyId', response.data.id);",
+							"    console.log('Company ID saved:', response.data.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"legalName\": \"Syntax Maker Company LLC\",\n  \"civilId\": \"123456789012\",\n  \"authorisedSignatory\": \"Ahmed Al-Mansouri\",\n  \"establishmentDate\": \"2020-01-15\",\n  \"owner\": \"Ahmed Al-Mansouri\",\n  \"address\": \"Block 5, Street 12, Building 45, Kuwait City, Kuwait\",\n  \"description\": \"Leading software development and IT consulting company specializing in enterprise solutions and digital transformation.\",\n  \"phone\": \"+96512345678\",\n  \"faxNumber\": \"+96512345679\",\n  \"licenseNumber\": \"LIC-2020-12345\",\n  \"commercialRegistration\": \"CR-2020-98765\",\n  \"legalOffice\": \"Al-Sayer Legal Consultants\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companies",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies"
+					]
+				},
+				"description": "Create a new company with all required and optional fields"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Company - Minimal Fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    console.log('Company created with minimal fields:', response.data.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"legalName\": \"Tech Solutions Kuwait\",\n  \"civilId\": \"987654321098\",\n  \"authorisedSignatory\": \"Fatima Hassan\",\n  \"owner\": \"Fatima Hassan\",\n  \"address\": \"Salmiya, Block 10, Kuwait\",\n  \"description\": \"IT consulting and software services provider\",\n  \"licenseNumber\": \"LIC-2021-54321\",\n  \"commercialRegistration\": \"CR-2021-11111\",\n  \"legalOffice\": \"Hassan Legal Group\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companies",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies"
+					]
+				},
+				"description": "Create a company with only required fields (no establishment date, phone, or fax)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Companies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    if (response.data && response.data.length > 0) {",
+							"        pm.collectionVariables.set('companyId', response.data[0].id);",
+							"        pm.environment.set('companyId', response.data[0].id);",
+							"        console.log('First company ID saved:', response.data[0].id);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/companies?page=1&limit=20",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				},
+				"description": "Get all companies with pagination (page 1, 20 items per page)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Companies - Page 2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/companies?page=2&limit=20",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				},
+				"description": "Get second page of companies"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Companies - Custom Limit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/companies?page=1&limit=50",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "50"
+						}
+					]
+				},
+				"description": "Get companies with custom limit (50 items per page)"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/companies/{{companyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies",
+						"{{companyId}}"
+					]
+				},
+				"description": "Get a single company by its ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Company - All Fields",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"legalName\": \"Syntax Maker Company LLC (Updated)\",\n  \"civilId\": \"123456789012\",\n  \"authorisedSignatory\": \"Ahmed Abdullah Al-Mansouri\",\n  \"establishmentDate\": \"2020-01-15\",\n  \"owner\": \"Ahmed Abdullah Al-Mansouri\",\n  \"address\": \"Block 5, Street 12, Building 45, Floor 3, Kuwait City, Kuwait\",\n  \"description\": \"Leading software development and IT consulting company specializing in enterprise solutions, digital transformation, and cloud services.\",\n  \"phone\": \"+96512345678\",\n  \"faxNumber\": \"+96512345679\",\n  \"licenseNumber\": \"LIC-2020-12345\",\n  \"commercialRegistration\": \"CR-2020-98765\",\n  \"legalOffice\": \"Al-Sayer Legal Consultants & Associates\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companies/{{companyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies",
+						"{{companyId}}"
+					]
+				},
+				"description": "Update all fields of a company"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Company - Partial Update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"phone\": \"+96512349999\",\n  \"description\": \"Updated company description with new service offerings\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companies/{{companyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies",
+						"{{companyId}}"
+					]
+				},
+				"description": "Update only specific fields (partial update)"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Company - Contact Info",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"phone\": \"+96512340000\",\n  \"faxNumber\": \"+96512340001\",\n  \"address\": \"New Address: Block 8, Street 25, Building 100, Salmiya, Kuwait\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companies/{{companyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies",
+						"{{companyId}}"
+					]
+				},
+				"description": "Update only contact information"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Company - Legal Info",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"authorisedSignatory\": \"New Signatory Name\",\n  \"licenseNumber\": \"LIC-2024-99999\",\n  \"legalOffice\": \"Updated Legal Firm LLC\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/companies/{{companyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies",
+						"{{companyId}}"
+					]
+				},
+				"description": "Update legal and authorization information"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Company",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/companies/{{companyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"companies",
+						"{{companyId}}"
+					]
+				},
+				"description": "Delete a company by ID"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "companyId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

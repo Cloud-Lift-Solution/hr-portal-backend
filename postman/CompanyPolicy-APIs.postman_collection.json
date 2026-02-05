@@ -1,0 +1,376 @@
+{
+	"info": {
+		"_postman_id": "company-policy-collection-001",
+		"name": "Company Policy APIs",
+		"description": "Complete CRUD operations for Company Policies",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Company Policy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    pm.collectionVariables.set('policyId', response.data.id);",
+							"    pm.environment.set('policyId', response.data.id);",
+							"    console.log('Policy ID saved:', response.data.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Remote Work Policy\",\n  \"description\": \"This policy outlines the guidelines and requirements for employees working remotely. It includes expectations for availability, communication, and productivity standards.\",\n  \"fileUrl\": \"https://s3.amazonaws.com/hr-documents/policies/remote-work-policy.pdf\",\n  \"companyId\": \"{{companyId}}\",\n  \"branchId\": \"{{branchId}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company-policies",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies"
+					]
+				},
+				"description": "Create a new company policy with title, description, optional file URL, company ID, and optional branch ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Company Policies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    if (response.data && response.data.length > 0) {",
+							"        pm.collectionVariables.set('policyId', response.data[0].id);",
+							"        pm.environment.set('policyId', response.data[0].id);",
+							"        console.log('First policy ID saved:', response.data[0].id);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/company-policies?page=1&limit=20",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				},
+				"description": "Get all company policies with pagination"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company Policies by Company ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/company-policies?companyId={{companyId}}&page=1&limit=20",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies"
+					],
+					"query": [
+						{
+							"key": "companyId",
+							"value": "{{companyId}}"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				},
+				"description": "Filter company policies by company ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company Policies by Branch ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/company-policies?branchId={{branchId}}&page=1&limit=20",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies"
+					],
+					"query": [
+						{
+							"key": "branchId",
+							"value": "{{branchId}}"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				},
+				"description": "Filter company policies by branch ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company Policy by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/company-policies/{{policyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies",
+						"{{policyId}}"
+					]
+				},
+				"description": "Get a single company policy by its ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Company Policy",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Updated Remote Work Policy\",\n  \"description\": \"Updated policy description with new guidelines for hybrid work arrangements and flexible scheduling options.\",\n  \"fileUrl\": \"https://s3.amazonaws.com/hr-documents/policies/remote-work-policy-v2.pdf\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company-policies/{{policyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies",
+						"{{policyId}}"
+					]
+				},
+				"description": "Update a company policy. All fields are optional."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Policy - Change Company",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"companyId\": \"{{companyId}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company-policies/{{policyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies",
+						"{{policyId}}"
+					]
+				},
+				"description": "Update the company associated with a policy"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Policy - Change Branch",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"branchId\": \"{{branchId}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company-policies/{{policyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies",
+						"{{policyId}}"
+					]
+				},
+				"description": "Update the branch associated with a policy"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Policy - Remove Branch",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"branchId\": null\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company-policies/{{policyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies",
+						"{{policyId}}"
+					]
+				},
+				"description": "Remove branch association from a policy (make it company-wide)"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Company Policy",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/company-policies/{{policyId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies",
+						"{{policyId}}"
+					]
+				},
+				"description": "Delete a company policy by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Policy - Company Wide (No Branch)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    console.log('Company-wide policy created:', response.data.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Company-Wide Code of Conduct\",\n  \"description\": \"This policy applies to all employees across all branches and outlines expected professional behavior, ethics, and standards.\",\n  \"fileUrl\": \"https://s3.amazonaws.com/hr-documents/policies/code-of-conduct.pdf\",\n  \"companyId\": \"{{companyId}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company-policies",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company-policies"
+					]
+				},
+				"description": "Create a company-wide policy without specifying a branch"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "policyId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "companyId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "branchId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

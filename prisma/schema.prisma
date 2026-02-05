@@ -105,6 +105,7 @@ model Branch {
   workShifts   BranchWorkShift[]
   translations BranchTranslation[]
   employees    Employee[]
+  policies     CompanyPolicy[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -816,6 +817,56 @@ model Server {
   @@index([startDate])
   @@index([endDate])
   @@index([createdAt])
+}
+
+// ============= COMPANY MODEL =============
+
+model Company {
+  id                      String    @id @default(uuid())
+  legalName               String // Legal name of the company
+  civilId                 String // Civil ID
+  authorisedSignatory     String // Authorized signatory name
+  establishmentDate       DateTime? // Company establishment date
+  owner                   String // Owner name
+  address                 String    @db.Text // Company address
+  description             String    @db.Text // Company description
+  phone                   String? // Phone number
+  faxNumber               String? // Fax number
+  licenseNumber           String // License number
+  commercialRegistration  String // Commercial registration number
+  legalOffice             String // Legal office
+
+  // Relations
+  policies CompanyPolicy[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([legalName])
+  @@index([licenseNumber])
+  @@index([commercialRegistration])
+}
+
+// Company Policy model
+model CompanyPolicy {
+  id          String  @id @default(uuid())
+  title       String // Policy title
+  description String  @db.Text // Policy description
+  fileUrl     String? @db.Text // Policy file URL
+
+  // Relations
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([branchId])
+  @@index([title])
 }
 
 // ============= SUPPORT TICKET MODELS =============
