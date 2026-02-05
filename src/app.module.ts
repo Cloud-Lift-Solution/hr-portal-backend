@@ -30,6 +30,8 @@ import { UploadModule } from './modules/upload/upload.module';
 import { WorkShiftModule } from './modules/work-shift/work-shift.module';
 import { LanguageModule } from './modules/language/language.module';
 import { BranchModule } from './modules/branch/branch.module';
+import { CompanyModule } from './modules/company/company.module';
+import { CompanyPolicyModule } from './modules/company-policy/company-policy.module';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { BranchModule } from './modules/branch/branch.module';
     WorkShiftModule,
     LanguageModule,
     BranchModule,
+    CompanyModule,
+    CompanyPolicyModule,
   ],
   controllers: [],
   providers: [
